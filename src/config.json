@@ -3,10 +3,10 @@
     "invokeUrl": "https://123456789.execute-api.ap-southeast-2.amazonaws.com/prod"
   },
   "cognito": {
-    "REGION": "ap-southeast-2",
-    "USER_POOL_ID": "ap-southeast-2_abcdefgh",
-    "APP_CLIENT_ID": "abcdefghijklmnopqrstuvwqyz",
-    "IDENTITY_POOL_ID": "ap-southeast-2:ab12345-a123-b123-c123-123456789"
+    "REGION": "us-east-2",
+    "USER_POOL_ID": "us-east-2_i8MKMjHDs",
+    "APP_CLIENT_ID": "qkb4oatv1lsq83gc0mmluej42",
+    "IDENTITY_POOL_ID": "us-east-2:14421be1-c652-40b1-9d15-4d6a3f3944db"
   },
   "s3": {
     "bucket": "devhourseries1stack-cdkreknimagebucket12345-123456789",
