@@ -2,8 +2,8 @@ env:
   browser: true
   es2021: true
 extends:
-  - 'eslint:recommended'
-  - 'plugin:react/recommended'
+  - "eslint:recommended"
+  - "plugin:react/recommended"
 parser: "@babel/eslint-parser"
 parserOptions:
   requireConfigFile: false
@@ -20,9 +20,6 @@ rules:
   linebreak-style:
     - error
     - unix
-  quotes:
-    - error
-    - single
   semi:
     - error
     - always
