@@ -1,28 +1,27 @@
-import React, { Component } from 'react';
-import { Auth } from 'aws-amplify';
-
-import FormErrors from '../FormErrors';
-import Validate from '../../lib/formValidation';
+import React, { Component } from "react";
+import { resendSignUpCode } from "aws-amplify/auth";
+import FormErrors from "../FormErrors";
+import Validate from "../../lib/formValidation";
 
 class ResendVerification extends Component {
   state = {
-    username: '',
+    username: "",
     errors: {
       cognito: null,
-      blankfield: false
-    }
+      blankfield: false,
+    },
   };
 
   clearErrorState = () => {
     this.setState({
       errors: {
         cognito: null,
-        blankfield: false
-      }
+        blankfield: false,
+      },
     });
   };
 
-  handleSubmit = async event => {
+  handleSubmit = async (event) => {
     event.preventDefault();
 
     // Form validation
@@ -30,31 +29,31 @@ class ResendVerification extends Component {
     const error = Validate(event, this.state);
     if (error) {
       this.setState({
-        errors: { ...this.state.errors, ...error }
+        errors: { ...this.state.errors, ...error },
       });
     }
 
     // AWS Cognito integration here
     try {
-      await Auth.resendSignUp(this.state.username);
-      this.props.history.push('/verify', { username: this.state.username });
+      await resendSignUpCode({ username: this.state.username });
+      this.props.history.push("/verify", { username: this.state.username });
     } catch (error) {
       let err = null;
-      !error.message ? err = { 'message': error } : err = error;
+      !error.message ? (err = { message: error }) : (err = error);
       this.setState({
         errors: {
           ...this.state.errors,
-          cognito: err
-        }
+          cognito: err,
+        },
       });
     }
   };
 
-  onInputChange = event => {
+  onInputChange = (event) => {
     this.setState({
-      [event.target.id]: event.target.value
+      [event.target.id]: event.target.value,
     });
-    document.getElementById(event.target.id).classList.remove('is-danger');
+    document.getElementById(event.target.id).classList.remove("is-danger");
   };
 
   render() {
