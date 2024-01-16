@@ -1,0 +1,149 @@
+{
+  "version": "36.0.0",
+  "artifacts": {
+    "AwsDevHourStack-frontend.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "AwsDevHourStack-frontend.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "AwsDevHourStack-frontend": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/us-east-2",
+      "properties": {
+        "templateFile": "AwsDevHourStack-frontend.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-us-east-2",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-us-east-2",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-us-east-2/06f1cee56e4173382855050125b1d2834c2b47de3fd0a09fc0c89b0db553dfeb.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "AwsDevHourStack-frontend.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-us-east-2",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "AwsDevHourStack-frontend.assets"
+      ],
+      "metadata": {
+        "/AwsDevHourStack-frontend/cdk-rekn-publicbucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cdkreknpublicbucket22D34A6D"
+          }
+        ],
+        "/AwsDevHourStack-frontend/cdk-rekn-publicbucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cdkreknpublicbucketPolicy098DA850"
+          }
+        ],
+        "/AwsDevHourStack-frontend/cdk-rekn-publicbucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cdkreknpublicbucketAutoDeleteObjectsCustomResourceFEF463C9"
+          }
+        ],
+        "/AwsDevHourStack-frontend/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+          }
+        ],
+        "/AwsDevHourStack-frontend/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+          }
+        ],
+        "/AwsDevHourStack-frontend/bucketURL": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "bucketURL"
+          }
+        ],
+        "/AwsDevHourStack-frontend/DeployWebsite/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployWebsiteAwsCliLayer17DBC421"
+          }
+        ],
+        "/AwsDevHourStack-frontend/DeployWebsite/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployWebsiteCustomResourceD116527B"
+          }
+        ],
+        "/AwsDevHourStack-frontend/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265"
+          }
+        ],
+        "/AwsDevHourStack-frontend/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF"
+          }
+        ],
+        "/AwsDevHourStack-frontend/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536"
+          }
+        ],
+        "/AwsDevHourStack-frontend/ghRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ghRole683893CA"
+          }
+        ],
+        "/AwsDevHourStack-frontend/ghRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ghRoleDefaultPolicy3A041F4A"
+          }
+        ],
+        "/AwsDevHourStack-frontend/gitHubCdRoleArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "gitHubCdRoleArn"
+          }
+        ],
+        "/AwsDevHourStack-frontend/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/AwsDevHourStack-frontend/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/AwsDevHourStack-frontend/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "AwsDevHourStack-frontend"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

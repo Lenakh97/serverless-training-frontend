@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import { API, Auth, Storage } from 'aws-amplify';
-import { FileTable } from './table/FileTable';
+import { list, uploadData } from 'aws-amplify/storage';
+import { del } from 'aws-amplify/api';
+import { FileTable } from './table/FileTable.js';
+import { getCurrentUserInfo } from "./getCurrentUserInfo.js";
+
 
 function bytesToSize(bytes) {
   let sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
@@ -58,8 +61,14 @@ export default class PhotosAdmin extends Component {
             key: fullPhotoKey
           },
         };
-    
-        await API.del(apiName, path, myInit);
+        try{
+           const delOperation = del(apiName, path, myInit);
+           await delOperation.response
+          console.log('DELETE call succeeded')
+        }
+        catch (error){
+          console.log('DELETE call failed', error)
+        }
         that.setState((currentState) => {
           return {
             tableData: currentState.tableData.reduce(function(accum, curVal){
@@ -76,11 +85,11 @@ export default class PhotosAdmin extends Component {
   }
 
   uploadImage = () => {
-    Storage.put(
-      `photos/${this.upload.files[0].name}`,
-      this.upload.files[0],
-      { contentType: this.upload.files[0].type, level: 'private' }
-    ).then(() => {
+    uploadData({
+      key: `photos/${this.upload.files[0].name}`,
+      data: this.upload.files[0],
+      options: { contentType: this.upload.files[0].type, level: 'private' }
+    }).then(() => {
       this.upload = null;
       this.setState(() => ({
         response: 'Success uploading file!',
@@ -92,7 +101,7 @@ export default class PhotosAdmin extends Component {
   };
 
   listImages = () => {
-    Storage.list('photos/', { level: 'private' })
+    list({prefix: 'photos/', options: { level: 'private' }})
       .then(result => {
         const fileArray = Object.values(result);
         const tableData = fileArray.map(getImageDetails);
@@ -108,7 +117,7 @@ export default class PhotosAdmin extends Component {
 
   componentDidMount = () => {
     this.listImages();
-    Auth.currentUserInfo()
+    getCurrentUserInfo()
       .then(response => {
         this.setState({
           identity: response.id
@@ -160,3 +169,4 @@ export default class PhotosAdmin extends Component {
   }
 
 }
+

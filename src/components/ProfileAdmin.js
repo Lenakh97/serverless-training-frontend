@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Auth } from 'aws-amplify';
+import { getCurrentUserInfo } from './getCurrentUserInfo.js';
 export default class ProfileAdmin extends Component {
 
   state = {
@@ -10,7 +10,7 @@ export default class ProfileAdmin extends Component {
   };
 
   componentDidMount() {
-    Auth.currentUserInfo()
+    getCurrentUserInfo()
       .then(response => {
         this.setState({ 
           email: response.attributes.email,
