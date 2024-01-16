@@ -1,28 +1,27 @@
-import React, { Component } from 'react';
-import { Auth } from 'aws-amplify';
-
-import FormErrors from '../FormErrors';
-import Validate from '../../lib/formValidation';
+import React, { Component } from "react";
+import { resetPassword } from "aws-amplify/auth";
+import FormErrors from "../FormErrors";
+import Validate from "../../lib/formValidation";
 
 class ForgotPassword extends Component {
   state = {
-    email: '',
+    email: "",
     errors: {
       cognito: null,
-      blankfield: false
-    }
-  }
+      blankfield: false,
+    },
+  };
 
   clearErrorState = () => {
     this.setState({
       errors: {
         cognito: null,
-        blankfield: false
-      }
+        blankfield: false,
+      },
     });
-  }
+  };
 
-  forgotPasswordHandler = async event => {
+  forgotPasswordHandler = async (event) => {
     event.preventDefault();
 
     // Form validation
@@ -30,25 +29,25 @@ class ForgotPassword extends Component {
     const error = Validate(event, this.state);
     if (error) {
       this.setState({
-        errors: { ...this.state.errors, ...error }
+        errors: { ...this.state.errors, ...error },
       });
     }
 
     // AWS Cognito integration here
     try {
-      await Auth.forgotPassword(this.state.email);
-      this.props.history.push('/forgotpasswordverification');
-    }catch(error) {
+      await resetPassword({ username: this.state.email });
+      this.props.history.push("/forgotpasswordverification");
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  onInputChange = event => {
+  onInputChange = (event) => {
     this.setState({
-      [event.target.id]: event.target.value
+      [event.target.id]: event.target.value,
     });
-    document.getElementById(event.target.id).classList.remove('is-danger');
-  }
+    document.getElementById(event.target.id).classList.remove("is-danger");
+  };
 
   render() {
     return (
@@ -56,8 +55,8 @@ class ForgotPassword extends Component {
         <div className="container">
           <h1>Forgot your password?</h1>
           <p>
-            Please enter the email address associated with your account and we'll
-            email you a password reset link.
+            Please enter the email address associated with your account and
+            we'll email you a password reset link.
           </p>
           <FormErrors formerrors={this.state.errors} />
 
@@ -85,9 +84,7 @@ class ForgotPassword extends Component {
             </div>
             <div className="field">
               <p className="control">
-                <button className="button is-success">
-                  Submit
-                </button>
+                <button className="button is-success">Submit</button>
               </p>
             </div>
           </form>
