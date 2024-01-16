@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import FormErrors from '../FormErrors';
-import Validate from '../../lib/formValidation';
+import FormErrors from '../FormErrors.js';
+import Validate from '../../lib/formValidation.js';
 
 class LogIn extends Component {
   state = {

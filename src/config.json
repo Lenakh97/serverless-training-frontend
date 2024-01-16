@@ -1,15 +1,15 @@
 {
   "api": {
-    "invokeUrl": "https://123456789.execute-api.ap-southeast-2.amazonaws.com/prod"
+    "invokeUrl": "awsdevhourstack-frontend-cdkreknpublicbucket22d34a-y0ijeo1gvfuj.s3-website.us-east-2.amazonaws.com"
   },
   "cognito": {
     "REGION": "us-east-2",
-    "USER_POOL_ID": "us-east-2_i8MKMjHDs",
-    "APP_CLIENT_ID": "qkb4oatv1lsq83gc0mmluej42",
-    "IDENTITY_POOL_ID": "us-east-2:14421be1-c652-40b1-9d15-4d6a3f3944db"
+    "USER_POOL_ID": "us-east-2_Y9BlBTBOp",
+    "APP_CLIENT_ID": "5simljth2h09ot5e9lr6l0fv2t",
+    "IDENTITY_POOL_ID": "us-east-2:8cf68e38-76c5-4a61-90fa-edd0727a26eb"
   },
   "s3": {
-    "bucket": "devhourseries1stack-cdkreknimagebucket12345-123456789",
-    "thumbBucket": "devhourseries1stack-cdkreknimagebucketresized12345-123456789"
+    "bucket": "awsdevhourstack-cdkreknimgagebucketabe44d40-biu4fkd5kuj7",
+    "thumbBucket": "awsdevhourstack-cdkreknimgagebucketresized9d46e29-jwb5nv2o1ih4"
   }
 }

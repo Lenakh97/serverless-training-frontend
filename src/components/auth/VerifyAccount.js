@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Auth } from 'aws-amplify';
+import { confirmSignUp } from 'aws-amplify/auth';
 
-import FormErrors from '../FormErrors';
-import Validate from '../../lib/formValidation';
+import FormErrors from '../FormErrors.js';
+import Validate from '../../lib/formValidation.js';
 
 class VerifyAccount extends Component {
   state = {
@@ -45,7 +45,7 @@ class VerifyAccount extends Component {
 
     // AWS Cognito integration here
     try {
-      await Auth.confirmSignUp(this.state.username, this.state.verificationcode);
+      await confirmSignUp({username: this.state.username, confirmationCode: this.state.verificationcode});
       this.props.history.push('/welcome');
     } catch (error) {
       let err = null;

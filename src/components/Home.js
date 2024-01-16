@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
-import Hero from './home/Hero';
-import HomeContent from './home/HomeContent';
+import Hero from './home/Hero.js';
+import HomeContent from './home/HomeContent.js';
 
 export default function Home() {
   return (

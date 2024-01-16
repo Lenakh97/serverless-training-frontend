@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Auth } from 'aws-amplify';
+import { signUp } from 'aws-amplify/auth';
 
-import FormErrors from '../FormErrors';
-import Validate from '../../lib/formValidation';
+import FormErrors from '../FormErrors.js';
+import Validate from '../../lib/formValidation.js';
 
 class Register extends Component {
   state = {
@@ -44,11 +44,13 @@ class Register extends Component {
     const { username, email, password } = this.state;
 
     try {
-      const signUpResponse = await Auth.signUp({
+      const signUpResponse = await signUp({
         username,
         password,
-        attributes: {
+        options: {
+          userAttributes: {
           email: email
+          }
         }
       });
       console.log(signUpResponse);
