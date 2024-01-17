@@ -3,10 +3,11 @@ import "bulma/css/bulma.min.css";
 import "react-image-gallery/styles/css/image-gallery.css";
 import "./index.css";
 import App from "./App";
-import Amplify, { Auth } from "aws-amplify";
+import { Amplify } from "aws-amplify";
 import config from "./config";
 import * as serviceWorker from "./serviceWorker";
 import { createRoot } from "react-dom/client";
+import { fetchAuthSession } from "aws-amplify/auth";
 
 Amplify.configure({
   Auth: {
@@ -32,9 +33,9 @@ Amplify.configure({
           //   // return { Authorization: `Bearer ${(await Auth.currentSession()).getAccessToken().getJwtToken()}` }
           // return { Authorization: `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}` }
           return {
-            Authorization: `Bearer ${(await Auth.currentSession())
-              .getIdToken()
-              .getJwtToken()}`,
+            Authorization: `Bearer ${
+              (await fetchAuthSession()).tokens.idToken
+            }`,
           };
         },
       },

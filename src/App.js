@@ -5,7 +5,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import { Auth } from "aws-amplify";
+import { signIn, signOut, fetchAuthSession } from "aws-amplify/auth";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 
@@ -26,6 +26,7 @@ import Welcome from "./components/auth/Welcome";
 import Footer from "./components/Footer";
 import VerifyAccount from "./components/auth/VerifyAccount";
 import ResendVerification from "./components/auth/ResendVerification";
+import { getAuthenticatedUser } from "./components/getAuthenticatedUser.js";
 
 library.add(faEdit);
 
@@ -49,7 +50,7 @@ class App extends Component {
 
   handleLogOut = async () => {
     try {
-      await Auth.signOut();
+      await signOut();
       this.setState({
         user: null,
         isAuthenticated: false,
@@ -63,7 +64,7 @@ class App extends Component {
 
   handleLogIn = async (username, password) => {
     try {
-      const user = await Auth.signIn(username, password);
+      const user = await signIn({ username, password });
       console.log(user);
       this.setState({
         user: user,
@@ -79,13 +80,13 @@ class App extends Component {
 
   async componentDidMount() {
     try {
-      const session = await Auth.currentSession();
+      const { tokens: session } = await fetchAuthSession();
       this.setState({
         isAuthenticated: true,
       });
       console.log(session);
 
-      const user = await Auth.currentAuthenticatedUser();
+      const user = await getAuthenticatedUser();
       this.setState({
         user,
       });
