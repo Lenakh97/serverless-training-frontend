@@ -1,7 +1,7 @@
-DevhourSeries1Stack.Bucket = devhourseries1stack-cdkreknimgagebucketabe44d40-16z9cio78l6o5
-DevhourSeries1Stack.BucketURL = devhourseries1stack-cdkreknpublicbucket22d34a6d-fj1smnqyo6s1.s3-website-ap-southeast-2.amazonaws.com
-DevhourSeries1Stack.IdentityPoolId = ap-southeast-2:33f5fa6a-60ad-45f4-9c17-36167b51f818
-DevhourSeries1Stack.Table = DevhourSeries1Stack-ImageLabelsE524135D-1A8I9QDP60LSI
-DevhourSeries1Stack.UserPoolClientId = 7g7f1lrdu22svvee0huif24p90
-DevhourSeries1Stack.UserPoolId = ap-southeast-2_xY2W87I9o
-DevhourSeries1Stack.imageAPIEndpointD64DB231 = https://mjd74rbtu4.execute-api.ap-southeast-2.amazonaws.com/prod/
+AwsDevHourStack.imageBucket = awsdevhourstack-cdkreknimgagebucketabe44d40-biu4fkd5kuj7
+AwsDevHourStack.bucketURL = awsdevhourstack-cdkreknpublicbucket22d34a6d-1k75x37htol2q.s3-website.us-east-2.amazonaws.com
+AwsDevHourStack.IdentityPoolId = us-east-2:8cf68e38-76c5-4a61-90fa-edd0727a26eb
+AwsDevHourStack.ddbTable = AwsDevHourStack-ImageLabelsE524135D-1A4HWK7ZKAGPV
+AwsDevHourStack.AppClientId = 5simljth2h09ot5e9lr6l0fv2t
+AwsDevHourStack.UserPoolId = us-east-2_Y9BlBTBOp
+AwsDevHourStack.imageAPIEndpointD64DB231 = awsdevhourstack-frontend-cdkreknpublicbucket22d34a-y0ijeo1gvfuj.s3-website.us-east-2.amazonaws.com
