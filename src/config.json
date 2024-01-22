@@ -1,6 +1,6 @@
 {
   "api": {
-    "invokeUrl": "awsdevhourstack-frontend-cdkreknpublicbucket22d34a-y0ijeo1gvfuj.s3-website.us-east-2.amazonaws.com"
+    "invokeUrl": "https://eb33tj7b09.execute-api.us-east-2.amazonaws.com/prod/"
   },
   "cognito": {
     "REGION": "us-east-2",
