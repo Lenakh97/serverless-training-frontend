@@ -5,7 +5,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import { signIn, signOut, fetchAuthSession } from "aws-amplify/auth";
+import { signIn, signOut } from "aws-amplify/auth";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 
@@ -80,18 +80,15 @@ class App extends Component {
 
   async componentDidMount() {
     try {
-      const { tokens: session } = await fetchAuthSession();
       this.setState({
         isAuthenticated: true,
       });
-      console.log(session);
-
+      
       const user = await getAuthenticatedUser();
       this.setState({
         user,
       });
-
-      if (user.attributes.email_verified) {
+      if (user.session.idToken.payload.email_verified) {
         this.setState({
           isVerified: true,
         });
