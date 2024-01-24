@@ -3,6 +3,7 @@ import { list, uploadData } from "aws-amplify/storage";
 import { del } from "aws-amplify/api";
 import { FileTable } from "./table/FileTable";
 import { getCurrentUserInfo } from "./getCurrentUserInfo.js";
+import { fetchAuthSession } from "aws-amplify/auth";
 
 function bytesToSize(bytes) {
   let sizes = ["Bytes", "KB", "MB", "GB", "TB"];
@@ -38,7 +39,7 @@ export default class PhotosAdmin extends Component {
   deleteImages = async (keys) => {
     const cognitoID = this.state.identity;
     const apiName = "imageAPI";
-    const path = "/images";
+    const path = "images";
     let that = this;
 
     await Promise.all(
@@ -46,9 +47,12 @@ export default class PhotosAdmin extends Component {
         const photoKey = image.key;
         const fullPhotoKey = `private/${cognitoID}/photos/${photoKey}`;
 
-        const myInit = {
+        const options = {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${(
+              await fetchAuthSession()
+            ).tokens.idToken.toString()}`,
           },
           response: true,
           queryStringParameters: {
@@ -58,7 +62,7 @@ export default class PhotosAdmin extends Component {
         };
 
         try {
-          const delOperation = del(apiName, path, myInit);
+          const delOperation = del({ apiName, path, options });
           await delOperation.response;
           console.log("DELETE call succeeded");
         } catch (error) {
@@ -79,12 +83,19 @@ export default class PhotosAdmin extends Component {
     // this.listImages();
   };
 
-  uploadImage = () => {
-    uploadData({
+  uploadImage = async () => {
+    console.log(this.upload.files);
+    const op = uploadData({
       key: `photos/${this.upload.files[0].name}`,
       data: this.upload.files[0],
-      options: { contentType: this.upload.files[0].type, level: "private" },
-    })
+      options: {
+        contentType: this.upload.files[0].type,
+        accessLevel: "private",
+      },
+    });
+    const res = await op.result;
+    console
+      .log(res)
       .then(() => {
         this.upload = null;
         this.setState(() => ({
@@ -98,10 +109,10 @@ export default class PhotosAdmin extends Component {
   };
 
   listImages = () => {
-    list({ prefix: "photos/", options: { level: "private" } }).then(
+    list({ prefix: "photos/", options: { accessLevel: "private" } }).then(
       (result) => {
         const fileArray = Object.values(result);
-        const tableData = fileArray.map(getImageDetails);
+        const tableData = fileArray[0].map(getImageDetails);
 
         this.setState({
           tableData,
