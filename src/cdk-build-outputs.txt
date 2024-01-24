@@ -4,4 +4,4 @@ AwsDevHourStack.IdentityPoolId = us-east-2:8cf68e38-76c5-4a61-90fa-edd0727a26eb
 AwsDevHourStack.ddbTable = AwsDevHourStack-ImageLabelsE524135D-1A4HWK7ZKAGPV
 AwsDevHourStack.AppClientId = 5simljth2h09ot5e9lr6l0fv2t
 AwsDevHourStack.UserPoolId = us-east-2_Y9BlBTBOp
-AwsDevHourStack.imageAPIEndpointD64DB231 = awsdevhourstack-frontend-cdkreknpublicbucket22d34a-y0ijeo1gvfuj.s3-website.us-east-2.amazonaws.com
+AwsDevHourStack.imageAPIEndpointD64DB231 = https://eb33tj7b09.execute-api.us-east-2.amazonaws.com/prod
