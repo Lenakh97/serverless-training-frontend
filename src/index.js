@@ -26,24 +26,18 @@ Amplify.configure({
     },
   },
   API: {
-    endpoints: [
-      {
-        name: "imageAPI",
+    REST: {
+      imageAPI: {
         endpoint: config.api.invokeUrl,
-        path: "/images",
-        custom_header: async () => {
-          //   return { Authorization : 'token' }
-          //   // Alternatively, with Cognito User Pools use this:
-          //   // return { Authorization: `Bearer ${(await Auth.currentSession()).getAccessToken().getJwtToken()}` }
-          // return { Authorization: `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}` }
+        header: async () => {
           return {
-            Authorization: `Bearer ${
-              (await fetchAuthSession()).tokens.idToken
-            }`,
+            Authorization: `Bearer ${(
+              await fetchAuthSession()
+            ).tokens.idToken.toString()}`,
           };
         },
       },
-    ],
+    },
   },
 });
 
