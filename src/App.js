@@ -5,7 +5,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import { signIn, signOut } from "aws-amplify/auth";
+import { signOut, signIn } from "aws-amplify/auth";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 
@@ -64,12 +64,9 @@ class App extends Component {
 
   handleLogIn = async (username, password) => {
     try {
-      const user = await signIn({ username, password });
-      console.log(user);
-      this.setState({
-        user: user,
-        isAuthenticated: true,
-      });
+      console.log("before handling signin");
+      const { isSignedIn, nextStep } = await signIn({ username, password });
+      console.log(isSignedIn, nextStep);
     } catch (error) {
       if (error.code && error.code === "UserNotConfirmedException") {
         window.location.href = "/verify";
@@ -83,8 +80,8 @@ class App extends Component {
       this.setState({
         isAuthenticated: true,
       });
-      
       const user = await getAuthenticatedUser();
+      console.log(user);
       this.setState({
         user,
       });
