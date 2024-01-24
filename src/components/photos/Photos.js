@@ -2,35 +2,38 @@ import React, { Component, Fragment } from "react";
 import { list, getUrl } from "aws-amplify/storage";
 import { get } from "aws-amplify/api";
 import ImageGallery from "react-image-gallery";
-import config from "../../config";
 import { getCurrentUserInfo } from "../getCurrentUserInfo";
+import { fetchAuthSession } from "aws-amplify/auth";
 
 let images = [];
 
 async function getPresignedURLS(orig, thumb) {
   let presignOriginal = await getUrl({
     key: orig,
-    options: { level: "private" },
+    options: { accessLevel: "private", useAccelerateEndpoint: false },
   });
   let presignThumb = await getUrl({
     key: thumb,
     options: {
-      level: "private",
-      bucket: config.s3.thumbBucket,
+      accessLevel: "private",
+      useAccelerateEndpoint: false,
     },
   });
-  let results = [presignOriginal, presignThumb];
+  let results = [presignOriginal.url, presignThumb.url];
   return Promise.resolve(results);
 }
 
 async function getPhotoLabels(key) {
   const apiName = "imageAPI";
-  const path = "/images";
+  const path = "images";
 
-  const myInit = {
+  const options = {
     // OPTIONAL
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${(
+        await fetchAuthSession()
+      ).tokens.idToken.toString()}`,
     },
     response: true, // OPTIONAL (return the entire Axios response object instead of only response.data)
     queryStringParameters: {
@@ -42,14 +45,14 @@ async function getPhotoLabels(key) {
 
   let apiResponse;
   try {
-    let apiResponse = get(apiName, path, myInit);
+    let apiResponse = get({ apiName, path, options });
     await apiResponse.response;
+    console.log(await apiResponse.response);
     console.log("GET call succeeded");
   } catch (error) {
     console.log("GET call failed: ", error);
   }
   let results = [apiResponse];
-
   return Promise.resolve(results);
 }
 
@@ -64,7 +67,6 @@ export default class Photos extends Component {
 
   getId = () => {
     getCurrentUserInfo().then((response) => {
-      // console.log(response.id)
       this.setState({ cognitoSub: response.id });
     });
   };
@@ -72,18 +74,15 @@ export default class Photos extends Component {
   listImages = async () => {
     const result = await list({
       prefix: "photos/",
-      options: { level: "private" },
+      options: { accessLevel: "private" },
     });
-    let fileArray = Object.values(result);
+    let fileArray = Object.values(result.items);
     const cognitoID = this.state.cognitoSub;
-
     const fileNames = fileArray.map(function (image) {
       return image.key.replace("photos/", "");
     });
 
     this.setState({ filelist: fileNames });
-
-    // console.log(fileNames)
 
     fileNames.forEach(addImagesToList);
 
@@ -105,6 +104,7 @@ export default class Photos extends Component {
         images.push(currentImg);
 
         getPhotoLabels(fullName).then((result) => {
+          console.log("labelResult:", result);
           let allLabels = result[0].data;
           // console.log(allLabels)
           if (allLabels) {
