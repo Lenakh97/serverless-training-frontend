@@ -7,7 +7,6 @@ import { Amplify } from "aws-amplify";
 import config from "./config";
 import * as serviceWorker from "./serviceWorker";
 import { createRoot } from "react-dom/client";
-import { fetchAuthSession } from "aws-amplify/auth";
 
 Amplify.configure({
   Auth: {
@@ -29,13 +28,6 @@ Amplify.configure({
     REST: {
       imageAPI: {
         endpoint: config.api.invokeUrl,
-        header: async () => {
-          return {
-            Authorization: `Bearer ${(
-              await fetchAuthSession()
-            ).tokens.idToken.toString()}`,
-          };
-        },
       },
     },
   },
