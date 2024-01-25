@@ -37,7 +37,8 @@ export default class PhotosAdmin extends Component {
   };
 
   deleteImages = async (keys) => {
-    const cognitoID = this.state.identity;
+    const cognitoID = "us-east-2:f0176eaa-50cd-4805-a44c-f0def68d78d5"; //this.state.identity;
+    console.log(cognitoID);
     const apiName = "imageAPI";
     const path = "images";
     let that = this;
@@ -46,7 +47,8 @@ export default class PhotosAdmin extends Component {
       keys.map(async function (image) {
         const photoKey = image.key;
         const fullPhotoKey = `private/${cognitoID}/photos/${photoKey}`;
-
+        //const fullPhotoKey = `private/us-east-2:f0176eaa-50cd-4805-a44c-f0def68d78d5/photos/${photoKey}`;
+        console.log(fullPhotoKey);
         const options = {
           headers: {
             "Content-Type": "application/json",
@@ -55,7 +57,7 @@ export default class PhotosAdmin extends Component {
             ).tokens.idToken.toString()}`,
           },
           response: true,
-          queryStringParameters: {
+          queryParams: {
             action: "deleteImage",
             key: fullPhotoKey,
           },
@@ -85,27 +87,20 @@ export default class PhotosAdmin extends Component {
 
   uploadImage = async () => {
     console.log(this.upload.files);
-    const op = uploadData({
-      key: `photos/${this.upload.files[0].name}`,
-      data: this.upload.files[0],
-      options: {
-        contentType: this.upload.files[0].type,
-        accessLevel: "private",
-      },
-    });
-    const res = await op.result;
-    console
-      .log(res)
-      .then(() => {
-        this.upload = null;
-        this.setState(() => ({
-          response: "Success uploading file!",
-        }));
-        this.listImages();
-      })
-      .catch((err) => {
-        this.setState({ response: `Cannot uploading file: ${err}` });
-      });
+    try {
+      const result = await uploadData({
+        key: `photos/${this.upload.files[0].name}`,
+        data: this.upload.files[0],
+        options: {
+          contentType: this.upload.files[0].type,
+          accessLevel: "private",
+        },
+      }).result;
+      console.log("upload key", `photos/${this.upload.files[0].name}`);
+      console.log("Succeeded upload: ", result);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
   };
 
   listImages = () => {
