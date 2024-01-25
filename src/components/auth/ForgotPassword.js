@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { resetPassword } from "aws-amplify/auth";
 import FormErrors from "../FormErrors";
 import Validate from "../../lib/formValidation";
+import withNavigateHook from "../withNavigateHook";
 
 class ForgotPassword extends Component {
   state = {
@@ -36,7 +37,8 @@ class ForgotPassword extends Component {
     // AWS Cognito integration here
     try {
       await resetPassword({ username: this.state.email });
-      this.props.history.push("/forgotpasswordverification");
+      this.props.navigation("/forgotpasswordverification");
+      //this.props.history.push("/forgotpasswordverification");
     } catch (error) {
       console.log(error);
     }
@@ -94,4 +96,4 @@ class ForgotPassword extends Component {
   }
 }
 
-export default ForgotPassword;
+export default withNavigateHook(ForgotPassword);
