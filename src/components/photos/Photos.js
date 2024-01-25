@@ -36,7 +36,7 @@ async function getPhotoLabels(key) {
       ).tokens.idToken.toString()}`,
     },
     response: true, // OPTIONAL (return the entire Axios response object instead of only response.data)
-    queryStringParameters: {
+    queryParams: {
       // OPTIONAL
       action: "getLabels",
       key: key,
@@ -46,8 +46,9 @@ async function getPhotoLabels(key) {
   let apiResponse;
   try {
     let apiResponse = get({ apiName, path, options });
-    await apiResponse.response;
-    console.log(await apiResponse.response);
+    console.log(apiResponse);
+    const res = await apiResponse.response;
+    console.log(res.body.json());
     console.log("GET call succeeded");
   } catch (error) {
     console.log("GET call failed: ", error);
@@ -77,7 +78,7 @@ export default class Photos extends Component {
       options: { accessLevel: "private" },
     });
     let fileArray = Object.values(result.items);
-    const cognitoID = this.state.cognitoSub;
+    const cognitoID = "us-east-2:f0176eaa-50cd-4805-a44c-f0def68d78d5"; //this.state.cognitoSub;
     const fileNames = fileArray.map(function (image) {
       return image.key.replace("photos/", "");
     });
@@ -106,7 +107,7 @@ export default class Photos extends Component {
         getPhotoLabels(fullName).then((result) => {
           console.log("labelResult:", result);
           let allLabels = result[0].data;
-          // console.log(allLabels)
+          console.log("allLabels", allLabels);
           if (allLabels) {
             let labelsDetected = Object.values(allLabels);
 
