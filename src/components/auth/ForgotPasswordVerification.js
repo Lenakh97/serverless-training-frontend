@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { confirmResetPassword } from "aws-amplify/auth";
 import FormErrors from "../FormErrors";
 import Validate from "../../lib/formValidation";
-
+import withNavigateHook from "../withNavigateHook";
 class ForgotPasswordVerification extends Component {
   state = {
     verificationcode: "",
@@ -42,7 +42,7 @@ class ForgotPasswordVerification extends Component {
         newPassword: this.state.newpassword,
         confirmationCode: this.state.verificationcode,
       });
-      this.props.history.push("/changepasswordconfirmation");
+      this.props.navigation("/changepasswordconfirmation");
     } catch (error) {
       console.log(error);
     }
@@ -123,4 +123,4 @@ class ForgotPasswordVerification extends Component {
   }
 }
 
-export default ForgotPasswordVerification;
+export default withNavigateHook(ForgotPasswordVerification);

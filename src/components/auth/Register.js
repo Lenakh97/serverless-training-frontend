@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { signUp } from "aws-amplify/auth";
 import FormErrors from "../FormErrors";
 import Validate from "../../lib/formValidation";
+import withNavigateHook from "../withNavigateHook";
 
 class Register extends Component {
   state = {
@@ -53,7 +54,7 @@ class Register extends Component {
         },
       });
       console.log(signUpResponse);
-      this.props.history.push("/verify", { username });
+      this.props.navigation("/verify", { username });
     } catch (error) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
@@ -157,4 +158,4 @@ class Register extends Component {
   }
 }
 
-export default Register;
+export default withNavigateHook(Register);

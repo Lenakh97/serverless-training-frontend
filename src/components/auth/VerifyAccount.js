@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { confirmSignUp } from "aws-amplify/auth";
 import FormErrors from "../FormErrors";
 import Validate from "../../lib/formValidation";
-
+import withNavigateHook from "../withNavigateHook";
 class VerifyAccount extends Component {
   state = {
     username: "",
@@ -14,7 +14,7 @@ class VerifyAccount extends Component {
   };
 
   componentDidMount() {
-    const locationState = this.props.location.state;
+    const locationState = location;
 
     if (locationState && locationState.username) {
       this.setState({ username: locationState.username });
@@ -48,7 +48,7 @@ class VerifyAccount extends Component {
         username: this.state.username,
         confirmationCode: this.state.verificationcode,
       });
-      this.props.history.push("/welcome");
+      this.props.navigate("/welcome");
     } catch (error) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
@@ -123,4 +123,4 @@ class VerifyAccount extends Component {
   }
 }
 
-export default VerifyAccount;
+export default withNavigateHook(VerifyAccount);

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { resendSignUpCode } from "aws-amplify/auth";
 import FormErrors from "../FormErrors";
 import Validate from "../../lib/formValidation";
-
+import withNavigateHook from "../withNavigateHook";
 class ResendVerification extends Component {
   state = {
     username: "",
@@ -36,7 +36,7 @@ class ResendVerification extends Component {
     // AWS Cognito integration here
     try {
       await resendSignUpCode({ username: this.state.username });
-      this.props.history.push("/verify", { username: this.state.username });
+      this.props.navigation("/verify", { username: this.state.username });
     } catch (error) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
@@ -91,4 +91,4 @@ class ResendVerification extends Component {
   }
 }
 
-export default ResendVerification;
+export default withNavigateHook(ResendVerification);

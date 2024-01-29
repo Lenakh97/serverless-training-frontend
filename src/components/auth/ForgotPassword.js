@@ -38,7 +38,6 @@ class ForgotPassword extends Component {
     try {
       await resetPassword({ username: this.state.email });
       this.props.navigation("/forgotpasswordverification");
-      //this.props.history.push("/forgotpasswordverification");
     } catch (error) {
       console.log(error);
     }

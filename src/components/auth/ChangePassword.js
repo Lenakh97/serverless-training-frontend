@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { updatePassword } from "aws-amplify/auth";
 import FormErrors from "../FormErrors";
 import Validate from "../../lib/formValidation";
+import withNavigateHook from "../withNavigateHook";
 
 class ChangePassword extends Component {
   state = {
@@ -44,7 +45,7 @@ class ChangePassword extends Component {
         oldPassword: this.state.oldpassword,
         newPassword: this.state.newpassword,
       });
-      this.props.history.push("/changepasswordconfirmation");
+      this.props.navigation("/changepasswordconfirmation");
     } catch (error) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
@@ -132,4 +133,4 @@ class ChangePassword extends Component {
   }
 }
 
-export default ChangePassword;
+export default withNavigateHook(ChangePassword);
