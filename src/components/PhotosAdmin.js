@@ -82,7 +82,6 @@ export default class PhotosAdmin extends Component {
   };
 
   uploadImage = async () => {
-    console.log(this.upload.files);
     try {
       const result = await uploadData({
         key: `photos/${this.upload.files[0].name}`,
