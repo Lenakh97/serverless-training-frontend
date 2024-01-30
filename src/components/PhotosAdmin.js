@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import { list, uploadData } from "aws-amplify/storage";
 import { del } from "aws-amplify/api";
 import { FileTable } from "./table/FileTable";
-import { getCurrentUserInfo } from "./getCurrentUserInfo.js";
+//import { getCurrentUserInfo } from "./getCurrentUserInfo.js";
 import { fetchAuthSession } from "aws-amplify/auth";
 
 function bytesToSize(bytes) {
@@ -37,8 +37,7 @@ export default class PhotosAdmin extends Component {
   };
 
   deleteImages = async (keys) => {
-    const cognitoID = "us-east-2:f0176eaa-50cd-4805-a44c-f0def68d78d5"; //this.state.identity;
-    console.log(cognitoID);
+    const cognitoID = this.state.identity;
     const apiName = "imageAPI";
     const path = "images";
     let that = this;
@@ -47,8 +46,6 @@ export default class PhotosAdmin extends Component {
       keys.map(async function (image) {
         const photoKey = image.key;
         const fullPhotoKey = `private/${cognitoID}/photos/${photoKey}`;
-        //const fullPhotoKey = `private/us-east-2:f0176eaa-50cd-4805-a44c-f0def68d78d5/photos/${photoKey}`;
-        console.log(fullPhotoKey);
         const options = {
           headers: {
             "Content-Type": "application/json",
@@ -96,7 +93,6 @@ export default class PhotosAdmin extends Component {
           accessLevel: "private",
         },
       }).result;
-      console.log("upload key", `photos/${this.upload.files[0].name}`);
       console.log("Succeeded upload: ", result);
     } catch (error) {
       console.log("Error: ", error);
@@ -121,9 +117,9 @@ export default class PhotosAdmin extends Component {
 
   componentDidMount = () => {
     this.listImages();
-    getCurrentUserInfo().then((response) => {
+    fetchAuthSession().then((response) => {
       this.setState({
-        identity: response.id,
+        identity: response.identityId,
       });
     });
   };
