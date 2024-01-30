@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { getCurrentUserInfo } from "./getCurrentUserInfo.js";
+import { fetchAuthSession } from "aws-amplify/auth";
 export default class ProfileAdmin extends Component {
   state = {
     email: "",
@@ -9,11 +9,11 @@ export default class ProfileAdmin extends Component {
   };
 
   componentDidMount() {
-    getCurrentUserInfo().then((response) => {
+    fetchAuthSession().then((response) => {
       this.setState({
-        email: response.attributes.email,
-        cognitoID: response.id,
-        username: response.username,
+        email: response.tokens.idToken.payload.email,
+        cognitoID: response.identityId,
+        username: response.tokens.accessToken.payload.username,
         loading: false,
       });
     });
