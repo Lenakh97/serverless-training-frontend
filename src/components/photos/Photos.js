@@ -12,7 +12,6 @@ async function getPresignedURLS(orig, thumb) {
     key: orig,
     options: { accessLevel: "private", useAccelerateEndpoint: false },
   });
-  console.log(presignOriginal);
   let presignThumb = await getUrl({
     key: thumb,
     options: {
@@ -73,14 +72,13 @@ export default class Photos extends Component {
   };
 
   listImages = async () => {
+    const authSession = await fetchAuthSession();
     const result = await list({
       prefix: "photos/",
       options: { accessLevel: "private" },
     });
     let fileArray = Object.values(result.items);
-    //const cognitoID = "us-east-2:f0176eaa-50cd-4805-a44c-f0def68d78d5";
-    const cognitoID = this.state.cognitoSub;
-    console.log("cognito", cognitoID);
+    const cognitoID = authSession.identityId;
     const fileNames = fileArray.map(function (image) {
       return image.key.replace("photos/", "");
     });
@@ -88,19 +86,15 @@ export default class Photos extends Component {
     this.setState({ filelist: fileNames });
 
     fileNames.forEach(addImagesToList);
-    console.log(fileNames);
 
     function addImagesToList(filename) {
       let orig = "photos/".concat(filename);
-      console.log("orig", orig);
       let fullName = "private/"
         .concat(cognitoID)
         .concat("/photos/")
         .concat(filename);
-      console.log("fullName:", fullName);
       getPresignedURLS(orig, orig).then((result) => {
         let originalImageSigned = result[0];
-        console.log(originalImageSigned.pathname);
         let thumbImageSigned = result[1];
         let currentImg = {
           original: originalImageSigned,
@@ -109,12 +103,8 @@ export default class Photos extends Component {
           isSelected: false,
         };
         images.push(currentImg);
-        const fullName2 = originalImageSigned.pathname
-          .replace("%3A", ":")
-          .slice(1);
-        console.log(fullName2);
 
-        getPhotoLabels(fullName2).then((result) => {
+        getPhotoLabels(fullName).then((result) => {
           let allLabels = result[0][0];
           if (allLabels) {
             let labelsDetected = Object.values(allLabels);
