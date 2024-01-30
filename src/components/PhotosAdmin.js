@@ -2,7 +2,6 @@ import React, { Component, Fragment } from "react";
 import { list, uploadData } from "aws-amplify/storage";
 import { del } from "aws-amplify/api";
 import { FileTable } from "./table/FileTable";
-//import { getCurrentUserInfo } from "./getCurrentUserInfo.js";
 import { fetchAuthSession } from "aws-amplify/auth";
 
 function bytesToSize(bytes) {
