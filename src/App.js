@@ -64,7 +64,6 @@ class App extends Component {
 
   handleLogIn = async (username, password) => {
     try {
-      console.log("before handling signin");
       const { isSignedIn, nextStep } = await signIn({ username, password });
       console.log(isSignedIn, nextStep);
     } catch (error) {
@@ -81,7 +80,6 @@ class App extends Component {
         isAuthenticated: true,
       });
       const user = await getAuthenticatedUser();
-      console.log(user);
       this.setState({
         user,
       });
