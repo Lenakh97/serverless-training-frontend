@@ -2,7 +2,6 @@ import React, { Component, Fragment } from "react";
 import { list, getUrl } from "aws-amplify/storage";
 import { get } from "aws-amplify/api";
 import ImageGallery from "react-image-gallery";
-import { getCurrentUserInfo } from "../getCurrentUserInfo";
 import { fetchAuthSession } from "aws-amplify/auth";
 
 let images = [];
@@ -66,19 +65,18 @@ export default class Photos extends Component {
   };
 
   getId = () => {
-    getCurrentUserInfo().then((response) => {
-      this.setState({ cognitoSub: response.id });
+    fetchAuthSession().then((response) => {
+      this.setState({ cognitoSub: response.identityId });
     });
   };
 
   listImages = async () => {
-    const authSession = await fetchAuthSession();
     const result = await list({
       prefix: "photos/",
       options: { accessLevel: "private" },
     });
     let fileArray = Object.values(result.items);
-    const cognitoID = authSession.identityId;
+    const cognitoID = this.state.cognitoSub;
     const fileNames = fileArray.map(function (image) {
       return image.key.replace("photos/", "");
     });
