@@ -1,24 +1,22 @@
-import React, { Component, Fragment } from 'react';
-import { Auth } from 'aws-amplify';
+import React, { Component, Fragment } from "react";
+import { fetchAuthSession } from "aws-amplify/auth";
 export default class ProfileAdmin extends Component {
-
   state = {
-    email: '',
-    cognitoID: '',
-    username: '',
-    loading: true
+    email: "",
+    cognitoID: "",
+    username: "",
+    loading: true,
   };
 
   componentDidMount() {
-    Auth.currentUserInfo()
-      .then(response => {
-        this.setState({ 
-          email: response.attributes.email,
-          cognitoID: response.id,
-          username: response.username,
-          loading: false
-        });
+    fetchAuthSession().then((response) => {
+      this.setState({
+        email: response.tokens.idToken.payload.email,
+        cognitoID: response.identityId,
+        username: response.tokens.accessToken.payload.username,
+        loading: false,
       });
+    });
   }
 
   render() {
@@ -35,17 +33,21 @@ export default class ProfileAdmin extends Component {
                   <input type="submit" value="Change Password" />
                 </form>
                 <br />
-                {
-                  this.state.loading ? 
-                    <span>Loading... </span> :
-                    (
-                      <span>
-                        <h2><strong>Username:</strong> {this.state.username}</h2>
-                        <h2><strong>Email Address:</strong> {this.state.email}</h2>
-                        <h2><strong>Cognito ID: </strong> {this.state.cognitoID}</h2>
-                      </span>
-                    )
-                }
+                {this.state.loading ? (
+                  <span>Loading... </span>
+                ) : (
+                  <span>
+                    <h2>
+                      <strong>Username:</strong> {this.state.username}
+                    </h2>
+                    <h2>
+                      <strong>Email Address:</strong> {this.state.email}
+                    </h2>
+                    <h2>
+                      <strong>Cognito ID: </strong> {this.state.cognitoID}
+                    </h2>
+                  </span>
+                )}
               </div>
             </div>
           </div>

@@ -5,7 +5,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import { Auth } from "aws-amplify";
+import { signOut, signIn } from "aws-amplify/auth";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 
@@ -26,6 +26,7 @@ import Welcome from "./components/auth/Welcome";
 import Footer from "./components/Footer";
 import VerifyAccount from "./components/auth/VerifyAccount";
 import ResendVerification from "./components/auth/ResendVerification";
+import { getAuthenticatedUser } from "./components/getAuthenticatedUser.js";
 
 library.add(faEdit);
 
@@ -49,7 +50,7 @@ class App extends Component {
 
   handleLogOut = async () => {
     try {
-      await Auth.signOut();
+      await signOut();
       this.setState({
         user: null,
         isAuthenticated: false,
@@ -63,12 +64,8 @@ class App extends Component {
 
   handleLogIn = async (username, password) => {
     try {
-      const user = await Auth.signIn(username, password);
-      console.log(user);
-      this.setState({
-        user: user,
-        isAuthenticated: true,
-      });
+      const { isSignedIn, nextStep } = await signIn({ username, password });
+      console.log(isSignedIn, nextStep);
     } catch (error) {
       if (error.code && error.code === "UserNotConfirmedException") {
         window.location.href = "/verify";
@@ -79,18 +76,14 @@ class App extends Component {
 
   async componentDidMount() {
     try {
-      const session = await Auth.currentSession();
       this.setState({
         isAuthenticated: true,
       });
-      console.log(session);
-
-      const user = await Auth.currentAuthenticatedUser();
+      const user = await getAuthenticatedUser();
       this.setState({
         user,
       });
-
-      if (user.attributes.email_verified) {
+      if (user.session.idToken.payload.email_verified) {
         this.setState({
           isVerified: true,
         });

@@ -1,28 +1,29 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import FormErrors from '../FormErrors';
-import Validate from '../../lib/formValidation';
+import FormErrors from "../FormErrors";
+import Validate from "../../lib/formValidation";
+import withNavigateHook from "../withNavigateHook";
 
 class LogIn extends Component {
   state = {
-    username: '',
-    password: '',
+    username: "",
+    password: "",
     errors: {
       cognito: null,
-      blankfield: false
-    }
+      blankfield: false,
+    },
   };
 
   clearErrorState = () => {
     this.setState({
       errors: {
         cognito: null,
-        blankfield: false
-      }
+        blankfield: false,
+      },
     });
   };
 
-  handleSubmit = async event => {
+  handleSubmit = async (event) => {
     event.preventDefault();
 
     // Form validation
@@ -30,31 +31,31 @@ class LogIn extends Component {
     const error = Validate(event, this.state);
     if (error) {
       this.setState({
-        errors: { ...this.state.errors, ...error }
+        errors: { ...this.state.errors, ...error },
       });
     }
 
     // AWS Cognito integration here
     try {
       await this.props.handleLogIn(this.state.username, this.state.password);
-      this.props.history.push('/');
-    }catch(error) {
+      this.props.navigation("/");
+    } catch (error) {
       let err = null;
-      !error.message ? err = { 'message': error } : err = error;
+      !error.message ? (err = { message: error }) : (err = error);
       this.setState({
         errors: {
           ...this.state.errors,
-          cognito: err
-        }
+          cognito: err,
+        },
       });
     }
   };
 
-  onInputChange = event => {
+  onInputChange = (event) => {
     this.setState({
-      [event.target.id]: event.target.value
+      [event.target.id]: event.target.value,
     });
-    document.getElementById(event.target.id).classList.remove('is-danger');
+    document.getElementById(event.target.id).classList.remove("is-danger");
   };
 
   render() {
@@ -67,8 +68,8 @@ class LogIn extends Component {
           <form onSubmit={this.handleSubmit}>
             <div className="field">
               <p className="control">
-                <input 
-                  className="input" 
+                <input
+                  className="input"
                   type="text"
                   id="username"
                   aria-describedby="usernameHelp"
@@ -80,8 +81,8 @@ class LogIn extends Component {
             </div>
             <div className="field">
               <p className="control has-icons-left">
-                <input 
-                  className="input" 
+                <input
+                  className="input"
                   type="password"
                   id="password"
                   placeholder="Password"
@@ -100,9 +101,7 @@ class LogIn extends Component {
             </div>
             <div className="field">
               <p className="control">
-                <button className="button is-success">
-                  Login
-                </button>
+                <button className="button is-success">Login</button>
               </p>
             </div>
           </form>
@@ -112,4 +111,4 @@ class LogIn extends Component {
   }
 }
 
-export default LogIn;
+export default withNavigateHook(LogIn);

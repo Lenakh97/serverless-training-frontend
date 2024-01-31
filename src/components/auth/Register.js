@@ -1,33 +1,33 @@
-import React, { Component } from 'react';
-import { Auth } from 'aws-amplify';
-
-import FormErrors from '../FormErrors';
-import Validate from '../../lib/formValidation';
+import React, { Component } from "react";
+import { signUp } from "aws-amplify/auth";
+import FormErrors from "../FormErrors";
+import Validate from "../../lib/formValidation";
+import withNavigateHook from "../withNavigateHook";
 
 class Register extends Component {
   state = {
-    username: '',
-    email: '',
-    password: '',
-    confirmpassword: '',
+    username: "",
+    email: "",
+    password: "",
+    confirmpassword: "",
     errors: {
       cognito: null,
       blankfield: false,
-      passwordmatch: false
-    }
-  }
+      passwordmatch: false,
+    },
+  };
 
   clearErrorState = () => {
     this.setState({
       errors: {
         cognito: null,
         blankfield: false,
-        passwordmatch: false
-      }
+        passwordmatch: false,
+      },
     });
-  }
+  };
 
-  handleSubmit = async event => {
+  handleSubmit = async (event) => {
     event.preventDefault();
 
     // Form validation
@@ -36,7 +36,7 @@ class Register extends Component {
 
     if (error) {
       this.setState({
-        errors: { ...this.state.errors, ...error }
+        errors: { ...this.state.errors, ...error },
       });
     }
 
@@ -44,33 +44,35 @@ class Register extends Component {
     const { username, email, password } = this.state;
 
     try {
-      const signUpResponse = await Auth.signUp({
+      const signUpResponse = await signUp({
         username,
         password,
-        attributes: {
-          email: email
-        }
+        options: {
+          userAttributes: {
+            email: email,
+          },
+        },
       });
       console.log(signUpResponse);
-      this.props.history.push('/verify', { username });
+      this.props.navigation("/verify", { username });
     } catch (error) {
       let err = null;
-      !error.message ? err = { 'message': error } : err = error;
+      !error.message ? (err = { message: error }) : (err = error);
       this.setState({
         errors: {
           ...this.state.errors,
-          cognito: err
-        }
+          cognito: err,
+        },
       });
     }
-  }
+  };
 
-  onInputChange = event => {
+  onInputChange = (event) => {
     this.setState({
-      [event.target.id]: event.target.value
+      [event.target.id]: event.target.value,
     });
-    document.getElementById(event.target.id).classList.remove('is-danger');
-  }
+    document.getElementById(event.target.id).classList.remove("is-danger");
+  };
 
   render() {
     return (
@@ -146,9 +148,7 @@ class Register extends Component {
             </div>
             <div className="field">
               <p className="control">
-                <button className="button is-success">
-                  Register
-                </button>
+                <button className="button is-success">Register</button>
               </p>
             </div>
           </form>
@@ -158,4 +158,4 @@ class Register extends Component {
   }
 }
 
-export default Register;
+export default withNavigateHook(Register);
