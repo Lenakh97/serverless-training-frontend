@@ -87,11 +87,12 @@ export default class Photos extends Component {
 
     function addImagesToList(filename) {
       let orig = "photos/".concat(filename);
+      let thumb = "thumbnails/".concat(filename);
       let fullName = "private/"
         .concat(cognitoID)
         .concat("/photos/")
         .concat(filename);
-      getPresignedURLS(orig, orig).then((result) => {
+      getPresignedURLS(orig, thumb).then((result) => {
         let originalImageSigned = result[0];
         let thumbImageSigned = result[1];
         let currentImg = {
