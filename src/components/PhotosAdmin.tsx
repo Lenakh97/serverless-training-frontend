@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment, useEffect, useState } from "react";
 import { list, uploadData } from "aws-amplify/storage";
 import { del } from "aws-amplify/api";
 import { FileTable } from "./table/FileTable";
@@ -24,19 +24,17 @@ function getImageDetails(image) {
     size: sizeString,
   };
 }
-export default class PhotosAdmin extends Component {
-  state = {
-    imageName: "",
-    imageFile: "",
-    response: "",
-    tableData: [],
-    loaded: "false",
-    uploading: "false",
-    identity: [],
-  };
+export const PhotosAdmin = () => {
+  const [imageName, setImageName] = useState<string>("");
+  const [imageFile, setImageFile] = useState<string>("");
+  const [response, setResponse] = useState<string>("");
+  const [tableData, setTableData] = useState<any>([]);
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [identity, setIdentity] = useState<any>([]);
 
-  deleteImages = async (keys) => {
-    const cognitoID = this.state.identity;
+  const deleteImages = async (keys: Array<string>) => {
+    const cognitoID = identity;
     const apiName = "imageAPI";
     const path = "images";
     let that = this;
@@ -81,7 +79,7 @@ export default class PhotosAdmin extends Component {
     // this.listImages();
   };
 
-  uploadImage = async () => {
+  const uploadImage = async () => {
     try {
       const result = await uploadData({
         key: `photos/${this.upload.files[0].name}`,
@@ -97,81 +95,72 @@ export default class PhotosAdmin extends Component {
     }
   };
 
-  listImages = () => {
+  const listImages = () => {
     list({ prefix: "photos/", options: { accessLevel: "private" } }).then(
       (result) => {
         const fileArray = Object.values(result);
         const tableData = fileArray[0].map(getImageDetails);
-
-        this.setState({
-          tableData,
-        });
-        this.setState({
-          loaded: true,
-        });
+        setTableData(tableData);
+        setLoaded(true);
       }
     );
   };
 
-  componentDidMount = () => {
-    this.listImages();
+  useEffect(() => {
+    listImages();
     fetchAuthSession().then((response) => {
-      this.setState({
-        identity: response.identityId,
-      });
+      setIdentity(response.identityId);
     });
-  };
+  });
 
-  render() {
-    return (
-      <Fragment>
-        <section className="section">
-          <div className="container">
-            <div className="App">
-              <h2>Upload a new photo</h2>
-              <input
-                type="file"
-                accept="image/png, image/jpeg"
-                style={{ display: "none" }}
-                ref={(ref) => (this.upload = ref)}
-                onChange={() =>
-                  this.setState({
-                    imageFile: this.upload.files[0],
-                    imageName: this.upload.files[0].name,
-                  })
-                }
-              />
-              <input
-                value={this.state.imageName}
-                placeholder="Select file"
-                onChange={(e) => {
-                  this.handleChange(e);
-                }}
-              />
-              <button
-                onClick={() => {
-                  this.upload.value = null;
-                  this.upload.click();
-                }}
-                loading={this.state.uploading}
-              >
-                Browse
-              </button>
+  return (
+    <Fragment>
+      <section className="section">
+        <div className="container">
+          <div className="App">
+            <h2>Upload a new photo</h2>
+            <input
+              type="file"
+              accept="image/png, image/jpeg"
+              style={{ display: "none" }}
+              ref={(ref) => (this.upload = ref)}
+              onChange={() =>
+                this.setState({
+                  imageFile: this.upload.files[0],
+                  imageName: this.upload.files[0].name,
+                })
+              }
+            />
+            <input
+              value={this.state.imageName}
+              placeholder="Select file"
+              onChange={(e) => {
+                this.handleChange(e);
+              }}
+            />
+            <button
+              onClick={() => {
+                this.upload.value = null;
+                this.upload.click();
+              }}
+              loading={this.state.uploading}
+            >
+              Browse
+            </button>
 
-              <button onClick={this.uploadImage}> Upload File </button>
+            <button onClick={this.uploadImage}> Upload File </button>
 
-              {!!this.state.response && <div>{this.state.response}</div>}
-            </div>
-            <br />
-            {this.state.loaded && (
-              <FileTable
-                filelist={this.state.tableData}
-                deleteImages={this.deleteImages}
-              />
-            )}
+            {!!this.state.response && <div>{this.state.response}</div>}
           </div>
-        </section>
-      </Fragment>
-    );
-  }
-}
+          <br />
+          {this.state.loaded && (
+            <FileTable
+              filelist={this.state.tableData}
+              deleteImages={this.deleteImages}
+            />
+          )}
+        </div>
+      </section>
+    </Fragment>
+  );
+};
