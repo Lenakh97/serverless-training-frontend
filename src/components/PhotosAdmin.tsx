@@ -4,14 +4,26 @@ import { del } from "aws-amplify/api";
 import { FileTable } from "./table/FileTable";
 import { fetchAuthSession } from "aws-amplify/auth";
 
-function bytesToSize(bytes) {
+type Image = {
+  key: string;
+  lastModified: { toString: () => string };
+  size: number;
+};
+
+type TableData = {
+  key: string;
+  lastModified: string;
+  size: string;
+}[];
+
+const bytesToSize = (bytes: number) => {
   let sizes = ["Bytes", "KB", "MB", "GB", "TB"];
   if (bytes == 0) return "0 Byte";
   let i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
   return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
-}
+};
 
-function getImageDetails(image) {
+const getImageDetails = (image: Image) => {
   let filenameOnly = image.key.replace("photos/", "");
   let modified = image.lastModified.toString();
   let size = image.size;
@@ -23,15 +35,15 @@ function getImageDetails(image) {
     lastModified: modified,
     size: sizeString,
   };
-}
+};
 export const PhotosAdmin = () => {
   const [imageName, setImageName] = useState<string>("");
   const [imageFile, setImageFile] = useState<string>("");
   const [response, setResponse] = useState<string>("");
-  const [tableData, setTableData] = useState<any>([]);
+  const [tableData, setTableData] = useState<TableData>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
   const [uploading, setUploading] = useState<boolean>(false);
-  const [identity, setIdentity] = useState<any>([]);
+  const [identity, setIdentity] = useState<string>([]);
 
   const deleteImages = async (keys: Array<string>) => {
     const cognitoID = identity;
@@ -40,15 +52,14 @@ export const PhotosAdmin = () => {
     let that = this;
 
     await Promise.all(
-      keys.map(async function (image) {
+      keys.map(async function (image: Image) {
         const photoKey = image.key;
         const fullPhotoKey = `private/${cognitoID}/photos/${photoKey}`;
+        const token = (await fetchAuthSession()).tokens?.idToken?.toString();
         const options = {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${(
-              await fetchAuthSession()
-            ).tokens.idToken.toString()}`,
+            Authorization: `Bearer ${token}`,
           },
           response: true,
           queryParams: {
@@ -64,14 +75,18 @@ export const PhotosAdmin = () => {
         } catch (error) {
           console.log("DELETE call failed", error);
         }
-        that.setState((currentState) => {
+        that.setState((currentState: { tableData: TableData }) => {
           return {
-            tableData: currentState.tableData.reduce(function (accum, curVal) {
+            tableData: currentState.tableData.reduce(function (
+              accum: { key: string }[],
+              curVal: { key: string }
+            ) {
               if (curVal.key !== photoKey) {
                 accum.push(curVal);
               }
               return accum;
-            }, []),
+            },
+            []),
           };
         });
       })
@@ -124,15 +139,13 @@ export const PhotosAdmin = () => {
               accept="image/png, image/jpeg"
               style={{ display: "none" }}
               ref={(ref) => (this.upload = ref)}
-              onChange={() =>
-                this.setState({
-                  imageFile: this.upload.files[0],
-                  imageName: this.upload.files[0].name,
-                })
-              }
+              onChange={() => {
+                setImageFile(this.upload.files[0]);
+                setImageName(this.upload.files[0].name);
+              }}
             />
             <input
-              value={this.state.imageName}
+              value={imageName}
               placeholder="Select file"
               onChange={(e) => {
                 this.handleChange(e);
@@ -143,21 +156,18 @@ export const PhotosAdmin = () => {
                 this.upload.value = null;
                 this.upload.click();
               }}
-              loading={this.state.uploading}
+              loading={uploading}
             >
               Browse
             </button>
 
-            <button onClick={this.uploadImage}> Upload File </button>
+            <button onClick={uploadImage}> Upload File </button>
 
-            {!!this.state.response && <div>{this.state.response}</div>}
+            {!!response && <div>{response}</div>}
           </div>
           <br />
-          {this.state.loaded && (
-            <FileTable
-              filelist={this.state.tableData}
-              deleteImages={this.deleteImages}
-            />
+          {loaded && (
+            <FileTable filelist={tableData} deleteImages={deleteImages} />
           )}
         </div>
       </section>

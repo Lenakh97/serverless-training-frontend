@@ -1,9 +1,9 @@
 import React, { Component, useEffect, useState } from "react";
 import { confirmSignUp } from "aws-amplify/auth";
-import FormErrors from "../FormErrors";
-import Validate from "../../lib/formValidation";
-import withNavigateHook from "../withNavigateHook";
-const VerifyAccount = () => {
+import { FormErrors } from "../FormErrors";
+import { Validate } from "../../lib/formValidation";
+
+export const VerifyAccount = () => {
   const [username, setUsername] = useState<string>("");
   const [verificationcode, setVerificationCode] = useState<string>("");
   const [errors, setErrors] = useState<{ cognito: any; blankfield: boolean }>({
@@ -117,5 +117,3 @@ const VerifyAccount = () => {
     </section>
   );
 };
-
-export default withNavigateHook(VerifyAccount);

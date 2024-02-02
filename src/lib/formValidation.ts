@@ -1,4 +1,7 @@
-export const validateForm = (event, state) => {
+export const validateForm = (
+  event,
+  state
+): { blankfield: boolean } | { passwordmatch: boolean } => {
   // clear all error messages
   const inputs = document.getElementsByClassName("is-danger");
 

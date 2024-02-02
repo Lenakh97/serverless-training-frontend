@@ -1,12 +1,12 @@
 import React, { Component, Fragment } from "react";
 import { list, getUrl } from "aws-amplify/storage";
 import { get } from "aws-amplify/api";
-import ImageGallery from "react-image-gallery";
+import ImageGallery, { type ReactImageGalleryItem } from "react-image-gallery";
 import { fetchAuthSession } from "aws-amplify/auth";
 
-let images = [];
+let images: ReactImageGalleryItem[] = [];
 
-async function getPresignedURLS(orig, thumb) {
+const getPresignedURLS = async (orig: string, thumb: string) => {
   let presignOriginal = await getUrl({
     key: orig,
     options: { accessLevel: "private", useAccelerateEndpoint: false },
@@ -20,19 +20,17 @@ async function getPresignedURLS(orig, thumb) {
   });
   let results = [presignOriginal.url, presignThumb.url];
   return Promise.resolve(results);
-}
+};
 
-async function getPhotoLabels(key) {
+const getPhotoLabels = async (key: string) => {
   const apiName = "imageAPI";
   const path = "images";
-
+  const token = (await fetchAuthSession()).tokens?.idToken?.toString();
   const options = {
     // OPTIONAL
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${(
-        await fetchAuthSession()
-      ).tokens.idToken.toString()}`,
+      Authorization: `Bearer ${token}`,
     },
     response: true, // OPTIONAL (return the entire Axios response object instead of only response.data)
     queryParams: {
@@ -53,7 +51,7 @@ async function getPhotoLabels(key) {
   }
   let results = [result];
   return Promise.resolve(results);
-}
+};
 
 export default class Photos extends Component {
   state = {
@@ -85,7 +83,7 @@ export default class Photos extends Component {
 
     fileNames.forEach(addImagesToList);
 
-    function addImagesToList(filename) {
+    function addImagesToList(filename: string) {
       let orig = "photos/".concat(filename);
       let thumb = "thumbnails/".concat(filename);
       let fullName = "private/"
@@ -96,8 +94,8 @@ export default class Photos extends Component {
         let originalImageSigned = result[0];
         let thumbImageSigned = result[1];
         let currentImg = {
-          original: originalImageSigned,
-          thumbnail: thumbImageSigned,
+          original: String(originalImageSigned),
+          thumbnail: String(thumbImageSigned),
           description: "Testing Description",
           isSelected: false,
         };
@@ -107,7 +105,7 @@ export default class Photos extends Component {
           let allLabels = result[0][0];
           if (allLabels) {
             let labelsDetected = Object.values(allLabels);
-            const filterLabels = (cut, list) =>
+            const filterLabels = (cut: string, list: any[]) =>
               list
                 .filter((label) => !label.S.includes(cut))
                 .map((element) => element.S);

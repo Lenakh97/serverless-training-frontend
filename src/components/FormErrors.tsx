@@ -1,6 +1,6 @@
 import React from "react";
 
-function FormErrors(props: {
+export const FormErrors = (props: {
   formerrors: {
     blankfield: any;
     passwordmatch: any;
@@ -25,7 +25,7 @@ function FormErrors(props: {
     | React.ReactPortal
     | null
     | undefined;
-}) {
+}) => {
   if (
     props.formerrors &&
     (props.formerrors.blankfield || props.formerrors.passwordmatch)
@@ -59,6 +59,4 @@ function FormErrors(props: {
   } else {
     return <div />;
   }
-}
-
-export default FormErrors;
+};

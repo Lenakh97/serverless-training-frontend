@@ -1,94 +1,81 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { resendSignUpCode } from "aws-amplify/auth";
-import FormErrors from "../FormErrors";
+import { FormErrors } from "../FormErrors";
 import Validate from "../../lib/formValidation";
-import withNavigateHook from "../withNavigateHook";
-class ResendVerification extends Component {
-  state = {
-    username: "",
-    errors: {
+
+export const ResendVerification = () => {
+  const [username, setUsername] = useState("");
+  const [errors, setErrors] = useState<{
+    cognito: any;
+    blankfield: boolean;
+  }>({
+    cognito: null,
+    blankfield: false,
+  });
+
+  const clearErrorState = () => {
+    setErrors({
       cognito: null,
       blankfield: false,
-    },
-  };
-
-  clearErrorState = () => {
-    this.setState({
-      errors: {
-        cognito: null,
-        blankfield: false,
-      },
     });
   };
 
-  handleSubmit = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     // Form validation
-    this.clearErrorState();
-    const error = Validate(event, this.state);
+    clearErrorState();
+    const error = Validate(event, { username, errors });
     if (error) {
-      this.setState({
-        errors: { ...this.state.errors, ...error },
-      });
+      setErrors({ ...errors, ...error });
     }
 
     // AWS Cognito integration here
     try {
-      await resendSignUpCode({ username: this.state.username });
-      this.props.navigation("/verify", { username: this.state.username });
+      await resendSignUpCode({ username: username });
+      this.props.navigation("/verify", { username: username });
     } catch (error) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
-      this.setState({
-        errors: {
-          ...this.state.errors,
-          cognito: err,
-        },
+      setErrors({
+        ...errors,
+        cognito: err,
       });
     }
   };
 
-  onInputChange = (event) => {
-    this.setState({
-      [event.target.id]: event.target.value,
-    });
+  const onInputChange = (event: { target: { id: string; value: any } }) => {
+    setUsername(event.target.value);
     document.getElementById(event.target.id).classList.remove("is-danger");
   };
 
-  render() {
-    return (
-      <section className="section auth">
-        <div className="container">
-          <h1>Resend verification code</h1>
-          <FormErrors formerrors={this.state.errors} />
+  return (
+    <section className="section auth">
+      <div className="container">
+        <h1>Resend verification code</h1>
+        <FormErrors formerrors={errors} />
 
-          <form onSubmit={this.handleSubmit}>
-            <div className="field">
-              <p className="control">
-                <input
-                  className="input"
-                  type="text"
-                  id="username"
-                  aria-describedby="usernameHelp"
-                  placeholder="Enter username"
-                  value={this.state.username}
-                  onChange={this.onInputChange}
-                />
-              </p>
-            </div>
-            <div className="field">
-              <p className="control">
-                <button className="button is-success">
-                  Resend Verify code
-                </button>
-              </p>
-            </div>
-          </form>
-        </div>
-      </section>
-    );
-  }
-}
-
-export default withNavigateHook(ResendVerification);
+        <form onSubmit={handleSubmit}>
+          <div className="field">
+            <p className="control">
+              <input
+                className="input"
+                type="text"
+                id="username"
+                aria-describedby="usernameHelp"
+                placeholder="Enter username"
+                value={username}
+                onChange={onInputChange}
+              />
+            </p>
+          </div>
+          <div className="field">
+            <p className="control">
+              <button className="button is-success">Resend Verify code</button>
+            </p>
+          </div>
+        </form>
+      </div>
+    </section>
+  );
+};

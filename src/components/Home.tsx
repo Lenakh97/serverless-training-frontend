@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import Hero from "./home/Hero";
 import HomeContent from "./home/HomeContent";
 
-export default function Home() {
+export const Home = () => {
   return (
     <Fragment>
       <Hero />
@@ -15,4 +15,4 @@ export default function Home() {
       <HomeContent />
     </Fragment>
   );
-}
+};

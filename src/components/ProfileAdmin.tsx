@@ -11,7 +11,7 @@ export const ProfileAdmin = () => {
     fetchAuthSession().then((response): void => {
       setEmail(response.tokens.idToken.payload.email);
       setCognitoID(response.identityId ?? "");
-      setUsername(response.tokens.accessToken.payload.username ?? "");
+      setUsername(response.tokens.accessToken.payload.username);
       setLoading(false);
     });
   });

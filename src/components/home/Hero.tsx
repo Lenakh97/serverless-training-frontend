@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Hero() {
+export const Hero = () => {
   return (
     <section className="hero is-primary">
       <div className="hero-body">
@@ -10,4 +10,4 @@ export default function Hero() {
       </div>
     </section>
   );
-}
+};
