@@ -1,16 +1,30 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 
-import FormErrors from "../FormErrors";
+import { FormErrors } from "../FormErrors";
 import Validate from "../../lib/formValidation";
-import withNavigateHook from "../withNavigateHook";
+import type { cognitoType } from "components/types";
+import { useNavigate } from "react-router-dom";
 
-const LogIn = ({auth, handleLogIn}:{auth: {
-  isAuthenticated: boolean;
-  user: null
-}, handleLogIn: (username: string, password: string) => Promise<void>}) => {
+export const LogIn = ({
+  auth,
+  handleLogIn,
+}: {
+  auth: {
+    isAuthenticated: boolean;
+    user: null;
+  };
+  handleLogIn: (username: string, password: string) => Promise<void>;
+}) => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({ cognito: null, blankfield: false });
+  const [errors, setErrors] = useState<{
+    cognito: cognitoType;
+    blankfield: boolean;
+  }>({
+    cognito: null,
+    blankfield: false,
+  });
 
   const clearErrorState = () => {
     setErrors({
@@ -19,29 +33,26 @@ const LogIn = ({auth, handleLogIn}:{auth: {
     });
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
     // Form validation
     clearErrorState();
-    const error = Validate(event, this.state);
+    const error = Validate(event, { username, password, errors });
     if (error) {
-      setErrors(
-        { ...this.state.errors, ...error },
+      setErrors({ ...errors, ...error });
     }
 
     // AWS Cognito integration here
     try {
       await handleLogIn(username, password);
-      this.props.navigation("/");
+      navigate("/");
     } catch (error) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
-      this.setState({
-        errors: {
-          ...this.state.errors,
-          cognito: err,
-        },
+      setErrors({
+        ...errors,
+        cognito: err,
       });
     }
   };
@@ -50,7 +61,10 @@ const LogIn = ({auth, handleLogIn}:{auth: {
     this.setState({
       [event.target.id]: event.target.value,
     });
-    document.getElementById(event.target.id).classList.remove("is-danger");
+    const id = document.getElementById(event.target.id);
+    if (id !== null) {
+      id.classList.remove("is-danger");
+    }
   };
 
   return (

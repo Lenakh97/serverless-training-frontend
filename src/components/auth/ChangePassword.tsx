@@ -1,14 +1,17 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import { updatePassword } from "aws-amplify/auth";
-import FormErrors from "../FormErrors";
+import { FormErrors } from "../FormErrors";
 import Validate from "../../lib/formValidation";
+import type { cognitoType } from "components/types";
+import { useNavigate } from "react-router-dom";
 
 export const ChangePassword = () => {
+  const navigate = useNavigate();
   const [oldpassword, setOldPassword] = useState("");
   const [newpassword, setNewPassword] = useState("");
   const [confirmpassword, setConfirmpassword] = useState("");
   const [errors, setErrors] = useState<{
-    cognito: any;
+    cognito: cognitoType;
     blankfield: boolean;
     passwordmatch: boolean;
   }>({
@@ -35,7 +38,12 @@ export const ChangePassword = () => {
 
     // Form validation
     clearErrorState();
-    const error = Validate(event, this.state);
+    const error = Validate(event, {
+      oldpassword,
+      newpassword,
+      confirmpassword,
+      errors,
+    });
 
     if (error) {
       setErrors({ ...errors, ...error });
@@ -47,7 +55,7 @@ export const ChangePassword = () => {
         oldPassword: oldpassword,
         newPassword: newpassword,
       });
-      this.props.navigation("/changepasswordconfirmation");
+      navigate("/changepasswordconfirmation");
     } catch (error) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
@@ -63,7 +71,10 @@ export const ChangePassword = () => {
     const id = event.target.id;
     const pass = { ...password, id: event.target.value };
     setPassword(pass);
-    document.getElementById(event.target.id).classList.remove("is-danger");
+    const targetId = document.getElementById(event.target.id);
+    if (targetId !== null) {
+      targetId.classList.remove("is-danger");
+    }
   };
 
   return (

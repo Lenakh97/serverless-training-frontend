@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
-import Hero from "./home/Hero";
-import HomeContent from "./home/HomeContent";
+import { Hero } from "./home/Hero";
+import { HomeContent } from "./home/HomeContent";
 
 export const Home = () => {
   return (

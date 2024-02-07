@@ -1,126 +1,135 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { confirmResetPassword } from "aws-amplify/auth";
-import FormErrors from "../FormErrors";
+import { FormErrors } from "../FormErrors";
 import Validate from "../../lib/formValidation";
-import withNavigateHook from "../withNavigateHook";
-class ForgotPasswordVerification extends Component {
-  state = {
-    verificationcode: "",
-    email: "",
-    newpassword: "",
-    errors: {
+import type { cognitoType } from "components/types";
+import { useNavigate } from "react-router-dom";
+
+export const ForgotPasswordVerification = () => {
+  const navigate = useNavigate();
+  const [verificationcode, setVerificationcode] = useState("");
+  const [email, setEmail] = useState("");
+  const [newpassword, setNewPassword] = useState("");
+  const [errors, setErrors] = useState<{
+    cognito: cognitoType;
+    blankfield: boolean;
+  }>({
+    cognito: null,
+    blankfield: false,
+  });
+
+  const clearErrorState = () => {
+    setErrors({
       cognito: null,
       blankfield: false,
-    },
-  };
-
-  clearErrorState = () => {
-    this.setState({
-      errors: {
-        cognito: null,
-        blankfield: false,
-      },
     });
   };
 
-  passwordVerificationHandler = async (event) => {
+  const passwordVerificationHandler = async (event: {
+    preventDefault: () => void;
+  }) => {
     event.preventDefault();
 
     // Form validation
-    this.clearErrorState();
-    const error = Validate(event, this.state);
+    clearErrorState();
+    const error = Validate(event, {
+      verificationcode,
+      email,
+      newpassword,
+      errors,
+    });
     if (error) {
-      this.setState({
-        errors: { ...this.state.errors, ...error },
+      setErrors({
+        ...errors,
+        ...error,
       });
     }
 
     // AWS Cognito integration here
     try {
       await confirmResetPassword({
-        username: this.state.email,
-        newPassword: this.state.newpassword,
-        confirmationCode: this.state.verificationcode,
+        username: email,
+        newPassword: newpassword,
+        confirmationCode: verificationcode,
       });
-      this.props.navigation("/changepasswordconfirmation");
+      navigate("/changepasswordconfirmation");
     } catch (error) {
       console.log(error);
     }
   };
 
-  onInputChange = (event) => {
+  const onInputChange = (event: { target: { id: string; value: any } }) => {
     this.setState({
       [event.target.id]: event.target.value,
     });
-    document.getElementById(event.target.id).classList.remove("is-danger");
+    const id = document.getElementById(event.target.id);
+    if (id !== null) {
+      id.classList.remove("is-danger");
+    }
   };
 
-  render() {
-    return (
-      <section className="section auth">
-        <div className="container">
-          <h1>Set new password</h1>
-          <p>
-            Please enter the verification code sent to your email address below,
-            your email address and a new password.
-          </p>
-          <FormErrors formerrors={this.state.errors} />
+  return (
+    <section className="section auth">
+      <div className="container">
+        <h1>Set new password</h1>
+        <p>
+          Please enter the verification code sent to your email address below,
+          your email address and a new password.
+        </p>
+        <FormErrors formerrors={errors} />
 
-          <form onSubmit={this.passwordVerificationHandler}>
-            <div className="field">
-              <p className="control">
-                <input
-                  type="text"
-                  className="input"
-                  id="verificationcode"
-                  aria-describedby="verificationCodeHelp"
-                  placeholder="Enter verification code"
-                  value={this.state.verificationcode}
-                  onChange={this.onInputChange}
-                />
-              </p>
-            </div>
-            <div className="field">
-              <p className="control has-icons-left">
-                <input
-                  className="input"
-                  type="email"
-                  id="email"
-                  aria-describedby="emailHelp"
-                  placeholder="Enter email"
-                  value={this.state.email}
-                  onChange={this.onInputChange}
-                />
-                <span className="icon is-small is-left">
-                  <i className="fas fa-envelope"></i>
-                </span>
-              </p>
-            </div>
-            <div className="field">
-              <p className="control has-icons-left">
-                <input
-                  type="password"
-                  className="input"
-                  id="newpassword"
-                  placeholder="New password"
-                  value={this.state.newpassword}
-                  onChange={this.onInputChange}
-                />
-                <span className="icon is-small is-left">
-                  <i className="fas fa-lock"></i>
-                </span>
-              </p>
-            </div>
-            <div className="field">
-              <p className="control">
-                <button className="button is-success">Submit</button>
-              </p>
-            </div>
-          </form>
-        </div>
-      </section>
-    );
-  }
-}
-
-export default withNavigateHook(ForgotPasswordVerification);
+        <form onSubmit={passwordVerificationHandler}>
+          <div className="field">
+            <p className="control">
+              <input
+                type="text"
+                className="input"
+                id="verificationcode"
+                aria-describedby="verificationCodeHelp"
+                placeholder="Enter verification code"
+                value={verificationcode}
+                onChange={onInputChange}
+              />
+            </p>
+          </div>
+          <div className="field">
+            <p className="control has-icons-left">
+              <input
+                className="input"
+                type="email"
+                id="email"
+                aria-describedby="emailHelp"
+                placeholder="Enter email"
+                value={email}
+                onChange={onInputChange}
+              />
+              <span className="icon is-small is-left">
+                <i className="fas fa-envelope"></i>
+              </span>
+            </p>
+          </div>
+          <div className="field">
+            <p className="control has-icons-left">
+              <input
+                type="password"
+                className="input"
+                id="newpassword"
+                placeholder="New password"
+                value={newpassword}
+                onChange={onInputChange}
+              />
+              <span className="icon is-small is-left">
+                <i className="fas fa-lock"></i>
+              </span>
+            </p>
+          </div>
+          <div className="field">
+            <p className="control">
+              <button className="button is-success">Submit</button>
+            </p>
+          </div>
+        </form>
+      </div>
+    </section>
+  );
+};

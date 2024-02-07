@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { list, getUrl } from "aws-amplify/storage";
 import { get } from "aws-amplify/api";
 import ImageGallery, { type ReactImageGalleryItem } from "react-image-gallery";
@@ -53,37 +53,35 @@ const getPhotoLabels = async (key: string) => {
   return Promise.resolve(results);
 };
 
-export default class Photos extends Component {
-  state = {
-    response: "",
-    filelist: "",
-    cognitoSub: "",
-    loaded: false,
-    pr: "",
-  };
+export const Photos = () => {
+  const [response, setResponse] = useState<string>("");
+  const [filelist, setFilelist] = useState<string[]>([]);
+  const [cognitoSub, setCognitoSub] = useState<string>("");
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [pr, setPr] = useState<boolean>();
 
-  getId = () => {
-    fetchAuthSession().then((response) => {
-      this.setState({ cognitoSub: response.identityId });
+  const getId = () => {
+    fetchAuthSession().then((response: AuthSession) => {
+      setCognitoSub(response.identityId);
     });
   };
 
-  listImages = async () => {
+  const listImages = async () => {
     const result = await list({
       prefix: "photos/",
       options: { accessLevel: "private" },
     });
     let fileArray = Object.values(result.items);
-    const cognitoID = this.state.cognitoSub;
+    const cognitoID = cognitoSub;
     const fileNames = fileArray.map(function (image) {
       return image.key.replace("photos/", "");
     });
 
-    this.setState({ filelist: fileNames });
+    setFilelist(fileNames);
 
     fileNames.forEach(addImagesToList);
 
-    function addImagesToList(filename: string) {
+    const addImagesToList = (filename: string) => {
       let orig = "photos/".concat(filename);
       let thumb = "thumbnails/".concat(filename);
       let fullName = "private/"
@@ -120,34 +118,32 @@ export default class Photos extends Component {
           }
         });
       });
-    }
-    this.setState({ pr: true });
+    };
+    setPr(true);
   };
 
-  componentDidMount = async () => {
-    this.getId();
-    this.listImages();
-    this.setState({ loaded: true });
-  };
+  useEffect(() => {
+    getId();
+    listImages();
+    setLoaded(true);
+  });
 
-  render() {
-    return (
-      <Fragment>
-        <section className="section">
-          <div className="container">
-            <h1>Your Photos</h1>
-            <p className="subtitle is-5">Review your photographs and labels</p>
-            <br />
-            <div className="columns">
-              <div className="column">
-                {this.state.pr ? (
-                  <ImageGallery items={images} thumbnailPosition="left" />
-                ) : null}
-              </div>
+  return (
+    <Fragment>
+      <section className="section">
+        <div className="container">
+          <h1>Your Photos</h1>
+          <p className="subtitle is-5">Review your photographs and labels</p>
+          <br />
+          <div className="columns">
+            <div className="column">
+              {pr ? (
+                <ImageGallery items={images} thumbnailPosition="left" />
+              ) : null}
             </div>
           </div>
-        </section>
-      </Fragment>
-    );
-  }
-}
+        </div>
+      </section>
+    </Fragment>
+  );
+};

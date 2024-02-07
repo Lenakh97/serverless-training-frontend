@@ -1,12 +1,15 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import { resendSignUpCode } from "aws-amplify/auth";
 import { FormErrors } from "../FormErrors";
 import Validate from "../../lib/formValidation";
+import type { cognitoType } from "components/types";
+import { useNavigate } from "react-router-dom";
 
 export const ResendVerification = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [errors, setErrors] = useState<{
-    cognito: any;
+    cognito: cognitoType;
     blankfield: boolean;
   }>({
     cognito: null,
@@ -20,7 +23,7 @@ export const ResendVerification = () => {
     });
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
     // Form validation
@@ -33,7 +36,7 @@ export const ResendVerification = () => {
     // AWS Cognito integration here
     try {
       await resendSignUpCode({ username: username });
-      this.props.navigation("/verify", { username: username });
+      navigate("/verify", { state: { username: username } });
     } catch (error) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
@@ -46,7 +49,10 @@ export const ResendVerification = () => {
 
   const onInputChange = (event: { target: { id: string; value: any } }) => {
     setUsername(event.target.value);
-    document.getElementById(event.target.id).classList.remove("is-danger");
+    const id = document.getElementById(event.target.id);
+    if (id !== null) {
+      id.classList.remove("is-danger");
+    }
   };
 
   return (

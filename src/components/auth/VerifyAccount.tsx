@@ -1,12 +1,16 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { confirmSignUp } from "aws-amplify/auth";
 import { FormErrors } from "../FormErrors";
-import { Validate } from "../../lib/formValidation";
+import Validate from "../../lib/formValidation";
+import type { cognitoType } from "components/types";
 
 export const VerifyAccount = () => {
   const [username, setUsername] = useState<string>("");
   const [verificationcode, setVerificationCode] = useState<string>("");
-  const [errors, setErrors] = useState<{ cognito: any; blankfield: boolean }>({
+  const [errors, setErrors] = useState<{
+    cognito: cognitoType;
+    blankfield: boolean;
+  }>({
     cognito: null,
     blankfield: false,
   });
@@ -15,8 +19,7 @@ export const VerifyAccount = () => {
     const locationState = location;
 
     if (locationState && locationState.username) {
-      setUsername(locationState.usename);
-      this.setState({ username: locationState.username });
+      setUsername(locationState.username);
     }
   });
 
@@ -27,12 +30,12 @@ export const VerifyAccount = () => {
     });
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
     // Form validation
     clearErrorState();
-    const error = Validate(event, this.state);
+    const error = Validate(event, { username, verificationcode, errors });
     if (error) {
       setErrors({ ...errors, ...error });
     }
@@ -58,11 +61,17 @@ export const VerifyAccount = () => {
     }
   };
 
-  const onInputChange = (event) => {
-    this.setState({
-      [event.target.id]: event.target.value,
-    });
-    document.getElementById(event.target.id).classList.remove("is-danger");
+  const onInputChange = (event: { target: { id: string; value: any } }) => {
+    if (event.target.id === "username") {
+      setUsername(event.target.value);
+    }
+    if (event.target.id === "verificationcode") {
+      setVerificationCode(event.target.value);
+    }
+    const id = document.getElementById(event.target.id);
+    if (id !== null) {
+      id.classList.remove("is-danger");
+    }
   };
 
   return (

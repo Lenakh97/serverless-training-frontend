@@ -1,6 +1,26 @@
+import type { cognitoType } from "components/auth/ForgotPassword";
+
 export const validateForm = (
-  event,
-  state
+  event: {
+    preventDefault: () => void;
+  },
+  state: {
+    oldpassword?: string;
+    newpassword?: string;
+    confirmpassword?: string;
+    errors?: {
+      cognito: cognitoType;
+      blankfield: boolean;
+      passwordmatch?: boolean;
+    };
+
+    email?: string;
+    verificationcode?: string;
+    username?: string;
+    password?: string;
+    firstname?: string;
+    lastname?: string;
+  }
 ): { blankfield: boolean } | { passwordmatch: boolean } => {
   // clear all error messages
   const inputs = document.getElementsByClassName("is-danger");
@@ -13,39 +33,66 @@ export const validateForm = (
 
   // Field contains a value
   if (state.username && state.username.trim() === "") {
-    document.getElementById("username").classList.add("is-danger");
+    const id = document.getElementById("username");
+    if (id !== null) {
+      id.classList.add("is-danger");
+    }
     return { blankfield: true };
   }
   if (state.firstname && state.firstname.trim() === "") {
-    document.getElementById("firstname").classList.add("is-danger");
+    const id = document.getElementById("firstname");
+    if (id !== null) {
+      id.classList.add("is-danger");
+    }
     return { blankfield: true };
   }
   if (state.lastname && state.lastname.trim() === "") {
-    document.getElementById("lastname").classList.add("is-danger");
+    const id = document.getElementById("lastname");
+    if (id !== null) {
+      id.classList.add("is-danger");
+    }
     return { blankfield: true };
   }
   if (state.email && state.email.trim() === "") {
-    document.getElementById("email").classList.add("is-danger");
+    const id = document.getElementById("email");
+    if (id !== null) {
+      id.classList.add("is-danger");
+    }
     return { blankfield: true };
   }
   if (state.verificationcode && state.verificationcode.trim() === "") {
-    document.getElementById("verificationcode").classList.add("is-danger");
+    const id = document.getElementById("verificationcode");
+    if (id !== null) {
+      id.classList.add("is-danger");
+    }
     return { blankfield: true };
   }
   if (state.password && state.password.trim() === "") {
-    document.getElementById("password").classList.add("is-danger");
+    const id = document.getElementById("password");
+    if (id !== null) {
+      id.classList.add("is-danger");
+    }
     return { blankfield: true };
   }
   if (state.oldpassword && state.oldpassword.trim() === "") {
-    document.getElementById("oldpassword").classList.add("is-danger");
+    const id = document.getElementById("oldpassword");
+    if (id !== null) {
+      id.classList.add("is-danger");
+    }
     return { blankfield: true };
   }
   if (state.newpassword && state.newpassword.trim() === "") {
-    document.getElementById("newpassword").classList.add("is-danger");
+    const id = document.getElementById("newpassword");
+    if (id !== null) {
+      id.classList.add("is-danger");
+    }
     return { blankfield: true };
   }
   if (state.confirmpassword && state.confirmpassword.trim() === "") {
-    document.getElementById("confirmpassword").classList.add("is-danger");
+    const id = document.getElementById("confirmpassword");
+    if (id !== null) {
+      id.classList.add("is-danger");
+    }
     return { blankfield: true };
   }
   if (
@@ -53,8 +100,14 @@ export const validateForm = (
     state.confirmpassword &&
     state.password !== state.confirmpassword
   ) {
-    document.getElementById("password").classList.add("is-danger");
-    document.getElementById("confirmpassword").classList.add("is-danger");
+    const id = document.getElementById("password");
+    if (id !== null) {
+      id.classList.add("is-danger");
+    }
+    const confirmId = document.getElementById("confirmpassword");
+    if (confirmId !== null) {
+      confirmId.classList.add("is-danger");
+    }
     return { passwordmatch: true };
   }
   if (
@@ -62,8 +115,14 @@ export const validateForm = (
     state.confirmpassword &&
     state.newpassword !== state.confirmpassword
   ) {
-    document.getElementById("newpassword").classList.add("is-danger");
-    document.getElementById("confirmpassword").classList.add("is-danger");
+    const id = document.getElementById("newpassword");
+    if (id !== null) {
+      id.classList.add("is-danger");
+    }
+    const confirmId = document.getElementById("confirmpassword");
+    if (confirmId !== null) {
+      confirmId.classList.add("is-danger");
+    }
     return { passwordmatch: true };
   }
   return;

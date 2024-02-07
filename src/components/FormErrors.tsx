@@ -2,8 +2,8 @@ import React from "react";
 
 export const FormErrors = (props: {
   formerrors: {
-    blankfield: any;
-    passwordmatch: any;
+    blankfield: boolean;
+    passwordmatch?: boolean;
     cognito: {
       message:
         | string
@@ -16,7 +16,7 @@ export const FormErrors = (props: {
         | undefined;
     };
   };
-  apierrors:
+  apierrors?:
     | string
     | number
     | boolean

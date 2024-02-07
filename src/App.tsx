@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -11,21 +11,21 @@ import { faEdit } from "@fortawesome/free-solid-svg-icons";
 
 import "./App.css";
 
-import Navbar from "./components/Navbar";
-import Home from "./components/Home";
-import Photos from "./components/photos/Photos";
-import PhotosAdmin from "./components/PhotosAdmin";
-import ProfileAdmin from "./components/ProfileAdmin";
-import LogIn from "./components/auth/LogIn";
-import Register from "./components/auth/Register";
-import ForgotPassword from "./components/auth/ForgotPassword";
-import ForgotPasswordVerification from "./components/auth/ForgotPasswordVerification";
-import ChangePassword from "./components/auth/ChangePassword";
-import ChangePasswordConfirm from "./components/auth/ChangePasswordConfirm";
-import Welcome from "./components/auth/Welcome";
-import Footer from "./components/Footer";
-import VerifyAccount from "./components/auth/VerifyAccount";
-import ResendVerification from "./components/auth/ResendVerification";
+import { Navbar } from "./components/Navbar.js";
+import { Home } from "./components/Home.js";
+import { Photos } from "./components/photos/Photos.js";
+import { PhotosAdmin } from "./components/PhotosAdmin.js";
+import { ProfileAdmin } from "./components/ProfileAdmin.js";
+import { LogIn } from "./components/auth/LogIn.js";
+import { Register } from "./components/auth/Register.js";
+import { ForgotPassword } from "./components/auth/ForgotPassword.js";
+import { ForgotPasswordVerification } from "./components/auth/ForgotPasswordVerification.js";
+import { ChangePassword } from "./components/auth/ChangePassword.js";
+import ChangePasswordConfirm from "./components/auth/ChangePasswordConfirm.js";
+import { Welcome } from "./components/auth/Welcome.js";
+import { Footer } from "./components/Footer.js";
+import { VerifyAccount } from "./components/auth/VerifyAccount.js";
+import { ResendVerification } from "./components/auth/ResendVerification.js";
 import { getAuthenticatedUser } from "./components/getAuthenticatedUser.js";
 
 library.add(faEdit);
@@ -40,29 +40,25 @@ const ProtectedRoute = ({ children, loggedIn, verified }) => {
   return children;
 };
 
-class App extends Component {
-  state = {
-    isAuthenticated: false,
-    isAuthenticating: true,
-    isVerified: false,
-    user: null,
-  };
+export const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isAuthenticating, setIsAuthenticating] = useState(true)
+  const [isVerified, setIsVerified] = useState(false)
+  const [user, setUser] = useState(null)
 
-  handleLogOut = async () => {
+  const handleLogOut = async () => {
     try {
       await signOut();
-      this.setState({
-        user: null,
-        isAuthenticated: false,
-        isAuthenticating: false,
-        isVerified: false,
-      });
+      setUser(null)
+      setIsAuthenticated(false)
+      setIsAuthenticating(false)
+      setIsVerified(false)
     } catch (error) {
       console.log(error.message);
     }
   };
 
-  handleLogIn = async (username, password) => {
+  const handleLogIn = async (username: string, password: string) => {
     try {
       const { isSignedIn, nextStep } = await signIn({ username, password });
       console.log(isSignedIn, nextStep);
@@ -73,50 +69,42 @@ class App extends Component {
       console.log(error.message);
     }
   };
-
-  async componentDidMount() {
+  useEffect(() => {
     try {
-      this.setState({
-        isAuthenticated: true,
-      });
+      setIsAuthenticated(true)
       const user = await getAuthenticatedUser();
-      this.setState({
-        user,
-      });
+      setUser(user)
       if (user.session.idToken.payload.email_verified) {
-        this.setState({
-          isVerified: true,
-        });
+        setIsVerified(true)
       }
     } catch (error) {
       if (error !== "No current user") {
         console.log(error);
       }
     }
-
-    this.setState({ isAuthenticating: false });
-  }
+    setIsAuthenticating(false)
+  })    
 
   render() {
     const authProps = {
-      isAuthenticated: this.state.isAuthenticated,
-      user: this.state.user,
+      isAuthenticated: isAuthenticated,
+      user: user,
     };
     return (
-      !this.state.isAuthenticating && (
+      !isAuthenticating && (
         <div className="App">
           <Router>
             <div>
-              <Navbar auth={authProps} handleLogOut={this.handleLogOut} />
+              <Navbar auth={authProps} handleLogOut={handleLogOut} />
               <Routes>
-                <Route exact path="/" element={<Home auth={authProps} />} />
+                <Route path="/" element={<Home auth={authProps} />} />
                 {/* <Route exact path="/products" render={(props) => <Products {...props} auth={authProps} />} /> */}
                 <Route
                   path="/photos"
                   element={
                     <ProtectedRoute
-                      loggedIn={this.state.isAuthenticated}
-                      verified={this.state.isVerified}
+                      loggedIn={isAuthenticated}
+                      verified={isVerified}
                     >
                       <Photos />
                     </ProtectedRoute>
@@ -126,8 +114,8 @@ class App extends Component {
                   path="/admin"
                   element={
                     <ProtectedRoute
-                      loggedIn={this.state.isAuthenticated}
-                      verified={this.state.isVerified}
+                      loggedIn={isAuthenticated}
+                      verified={isVerified}
                     >
                       <PhotosAdmin />
                     </ProtectedRoute>
@@ -137,65 +125,52 @@ class App extends Component {
                   path="/profile"
                   element={
                     <ProtectedRoute
-                      loggedIn={this.state.isAuthenticated}
-                      verified={this.state.isVerified}
+                      loggedIn={isAuthenticated}
+                      verified={isVerified}
                     >
                       <ProfileAdmin />
                     </ProtectedRoute>
                   }
                 />
                 <Route
-                  exact
                   path="/admin"
                   element={<PhotosAdmin auth={authProps} />}
                 />
                 <Route
-                  exact
                   path="/login"
                   element={
-                    <LogIn auth={authProps} handleLogIn={this.handleLogIn} />
+                    <LogIn auth={authProps} handleLogIn={handleLogIn} />
                   }
                 />
                 <Route
-                  exact
                   path="/verify"
                   element={<VerifyAccount auth={authProps} />}
                 />
                 <Route
-                  exact
                   path="/resendverification"
                   element={<ResendVerification auth={authProps} />}
                 />
                 <Route
-                  exact
                   path="/register"
                   element={<Register auth={authProps} />}
                 />
                 <Route
-                  exact
                   path="/forgotpassword"
                   element={<ForgotPassword auth={authProps} />}
                 />
                 <Route
-                  exact
                   path="/forgotpasswordverification"
                   element={<ForgotPasswordVerification auth={authProps} />}
                 />
                 <Route
-                  exact
                   path="/changepassword"
                   element={<ChangePassword auth={authProps} />}
                 />
                 <Route
-                  exact
                   path="/changepasswordconfirmation"
                   element={<ChangePasswordConfirm auth={authProps} />}
                 />
-                <Route
-                  exact
-                  path="/welcome"
-                  element={<Welcome auth={authProps} />}
-                />
+                <Route path="/welcome" element={<Welcome auth={authProps} />} />
               </Routes>
               <Footer />
             </div>

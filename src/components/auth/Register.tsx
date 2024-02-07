@@ -1,15 +1,18 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import { signUp } from "aws-amplify/auth";
 import { FormErrors } from "../FormErrors";
 import Validate from "../../lib/formValidation";
+import type { cognitoType } from "components/types";
+import { useNavigate } from "react-router-dom";
 
 export const Register = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmpassword] = useState("");
   const [errors, setErrors] = useState<{
-    cognito: any;
+    cognito: cognitoType;
     blankfield: boolean;
     passwordmatch: boolean;
   }>({
@@ -26,12 +29,18 @@ export const Register = () => {
     });
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
     // Form validation
     clearErrorState();
-    const error = Validate(event, this.state);
+    const error = Validate(event, {
+      username,
+      email,
+      password,
+      confirmpassword,
+      errors,
+    });
 
     if (error) {
       setErrors({ ...errors, ...error });
@@ -51,7 +60,7 @@ export const Register = () => {
         },
       });
       console.log(signUpResponse);
-      this.props.navigation("/verify", { username });
+      navigate("/verify", { state: { username } });
     } catch (error) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
@@ -64,11 +73,14 @@ export const Register = () => {
     }
   };
 
-  const onInputChange = (event) => {
+  const onInputChange = (event: { target: { id: string; value: any } }) => {
     this.setState({
       [event.target.id]: event.target.value,
     });
-    document.getElementById(event.target.id).classList.remove("is-danger");
+    const id = document.getElementById(event.target.id);
+    if (id !== null) {
+      id.classList.remove("is-danger");
+    }
   };
 
   return (
