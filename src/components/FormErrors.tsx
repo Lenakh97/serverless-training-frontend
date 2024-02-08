@@ -14,7 +14,7 @@ export const FormErrors = (props: {
         | React.ReactPortal
         | null
         | undefined;
-    };
+    } | null;
   };
   apierrors?:
     | string

@@ -1,5 +1,4 @@
-import type { cognitoType } from "components/auth/ForgotPassword";
-
+import type { cognitoType } from "components/types";
 export const validateForm = (
   event: {
     preventDefault: () => void;

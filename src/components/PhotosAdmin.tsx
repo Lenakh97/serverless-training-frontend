@@ -148,7 +148,7 @@ export const PhotosAdmin = () => {
               value={imageName}
               placeholder="Select file"
               onChange={(e) => {
-                this.handleChange(e);
+                handleChange(e);
               }}
             />
             <button

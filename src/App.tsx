@@ -41,20 +41,20 @@ const ProtectedRoute = ({ children, loggedIn, verified }) => {
 };
 
 export const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isAuthenticating, setIsAuthenticating] = useState(true)
-  const [isVerified, setIsVerified] = useState(false)
-  const [user, setUser] = useState(null)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+  const [isAuthenticating, setIsAuthenticating] = useState<boolean>(true)
+  const [isVerified, setIsVerified] = useState<boolean>(false)
+  const [user, setUser] = useState<{username: string, session: any}>({username:'', session:''})
 
   const handleLogOut = async () => {
     try {
       await signOut();
-      setUser(null)
+      setUser({username: '', session:''})
       setIsAuthenticated(false)
       setIsAuthenticating(false)
       setIsVerified(false)
     } catch (error) {
-      console.log(error.message);
+      console.log((error as Error).message);
     }
   };
 
@@ -66,7 +66,7 @@ export const App = () => {
       if (error.code && error.code === "UserNotConfirmedException") {
         window.location.href = "/verify";
       }
-      console.log(error.message);
+      console.log((error as Error).message);
     }
   };
   useEffect(() => {

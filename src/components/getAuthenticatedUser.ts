@@ -1,4 +1,4 @@
-import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth";
+import { fetchAuthSession, getCurrentUser, type AuthTokens } from "aws-amplify/auth";
 
 export const getAuthenticatedUser = async (): Promise<{
   username: string;

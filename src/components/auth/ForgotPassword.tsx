@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { resetPassword } from "aws-amplify/auth";
 import { FormErrors } from "../FormErrors";
 import Validate from "../../lib/formValidation";
-import type { cognitoType } from "components/types";
+import type { export cognitoType } from "components/types";
 import { useNavigate } from "react-router-dom";
 
 export const ForgotPassword = () => {

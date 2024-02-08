@@ -64,11 +64,9 @@ export const Register = () => {
     } catch (error) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
-      this.setState({
-        errors: {
-          ...this.state.errors,
-          cognito: err,
-        },
+      setErrors({
+        ...errors,
+        cognito: err,
       });
     }
   };
@@ -126,7 +124,7 @@ export const Register = () => {
                 type="password"
                 id="password"
                 placeholder="Password"
-                value={this.state.password}
+                value={password}
                 onChange={onInputChange}
               />
               <span className="icon is-small is-left">
@@ -141,7 +139,7 @@ export const Register = () => {
                 type="password"
                 id="confirmpassword"
                 placeholder="Confirm password"
-                value={this.state.confirmpassword}
+                value={confirmpassword}
                 onChange={onInputChange}
               />
               <span className="icon is-small is-left">

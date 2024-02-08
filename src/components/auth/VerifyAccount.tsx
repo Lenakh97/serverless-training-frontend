@@ -3,8 +3,10 @@ import { confirmSignUp } from "aws-amplify/auth";
 import { FormErrors } from "../FormErrors";
 import Validate from "../../lib/formValidation";
 import type { cognitoType } from "components/types";
+import { useNavigate } from "react-router-dom";
 
 export const VerifyAccount = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState<string>("");
   const [verificationcode, setVerificationCode] = useState<string>("");
   const [errors, setErrors] = useState<{
@@ -46,7 +48,7 @@ export const VerifyAccount = () => {
         username: username,
         confirmationCode: verificationcode,
       });
-      this.props.navigate("/welcome");
+      navigate("/welcome");
     } catch (error) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);

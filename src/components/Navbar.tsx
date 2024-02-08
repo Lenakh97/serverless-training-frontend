@@ -1,3 +1,4 @@
+import type { AuthTokens } from "aws-amplify/auth";
 import React from "react";
 
 export const Navbar = ({
