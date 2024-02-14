@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 
 export const Register = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmpassword, setConfirmpassword] = useState("");
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmpassword, setConfirmpassword] = useState<string>("");
   const [errors, setErrors] = useState<{
     cognito: cognitoType;
     blankfield: boolean;
@@ -72,9 +72,6 @@ export const Register = () => {
   };
 
   const onInputChange = (event: { target: { id: string; value: any } }) => {
-    this.setState({
-      [event.target.id]: event.target.value,
-    });
     const id = document.getElementById(event.target.id);
     if (id !== null) {
       id.classList.remove("is-danger");
@@ -97,7 +94,10 @@ export const Register = () => {
                 aria-describedby="userNameHelp"
                 placeholder="Enter username"
                 value={username}
-                onChange={onInputChange}
+                onChange={() => {
+                  setUsername(username);
+                  onInputChange;
+                }}
               />
             </p>
           </div>
@@ -110,7 +110,10 @@ export const Register = () => {
                 aria-describedby="emailHelp"
                 placeholder="Enter email"
                 value={email}
-                onChange={onInputChange}
+                onChange={() => {
+                  setEmail(email);
+                  onInputChange;
+                }}
               />
               <span className="icon is-small is-left">
                 <i className="fas fa-envelope"></i>
@@ -125,7 +128,10 @@ export const Register = () => {
                 id="password"
                 placeholder="Password"
                 value={password}
-                onChange={onInputChange}
+                onChange={() => {
+                  setPassword(password);
+                  onInputChange;
+                }}
               />
               <span className="icon is-small is-left">
                 <i className="fas fa-lock"></i>
@@ -140,7 +146,10 @@ export const Register = () => {
                 id="confirmpassword"
                 placeholder="Confirm password"
                 value={confirmpassword}
-                onChange={onInputChange}
+                onChange={() => {
+                  setConfirmpassword(confirmpassword);
+                  onInputChange;
+                }}
               />
               <span className="icon is-small is-left">
                 <i className="fas fa-lock"></i>

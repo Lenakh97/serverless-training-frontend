@@ -7,9 +7,9 @@ import { useNavigate } from "react-router-dom";
 
 export const ChangePassword = () => {
   const navigate = useNavigate();
-  const [oldpassword, setOldPassword] = useState("");
-  const [newpassword, setNewPassword] = useState("");
-  const [confirmpassword, setConfirmpassword] = useState("");
+  const [oldpassword, setOldPassword] = useState<string>("");
+  const [newpassword, setNewPassword] = useState<string>("");
+  const [confirmpassword, setConfirmpassword] = useState<string>("");
   const [errors, setErrors] = useState<{
     cognito: cognitoType;
     blankfield: boolean;
@@ -18,11 +18,6 @@ export const ChangePassword = () => {
     cognito: null,
     blankfield: false,
     passwordmatch: false,
-  });
-  const [password, setPassword] = useState({
-    oldpassword: "",
-    newpassword: "",
-    confirmpassword: "",
   });
 
   const clearErrorState = () => {
@@ -68,9 +63,6 @@ export const ChangePassword = () => {
   };
 
   const onInputChange = (event: { target: { id: string; value: any } }) => {
-    const id = event.target.id;
-    const pass = { ...password, id: event.target.value };
-    setPassword(pass);
     const targetId = document.getElementById(event.target.id);
     if (targetId !== null) {
       targetId.classList.remove("is-danger");
@@ -92,7 +84,10 @@ export const ChangePassword = () => {
                 id="oldpassword"
                 placeholder="Old password"
                 value={oldpassword}
-                onChange={onInputChange}
+                onChange={() => {
+                  setOldPassword(oldpassword);
+                  onInputChange;
+                }}
               />
               <span className="icon is-small is-left">
                 <i className="fas fa-lock"></i>
@@ -107,7 +102,10 @@ export const ChangePassword = () => {
                 id="newpassword"
                 placeholder="New password"
                 value={newpassword}
-                onChange={onInputChange}
+                onChange={() => {
+                  setNewPassword(newpassword);
+                  onInputChange;
+                }}
               />
               <span className="icon is-small is-left">
                 <i className="fas fa-lock"></i>
@@ -122,7 +120,10 @@ export const ChangePassword = () => {
                 id="confirmpassword"
                 placeholder="Confirm password"
                 value={confirmpassword}
-                onChange={onInputChange}
+                onChange={() => {
+                  setConfirmpassword(confirmpassword);
+                  onInputChange;
+                }}
               />
               <span className="icon is-small is-left">
                 <i className="fas fa-lock"></i>

@@ -61,7 +61,7 @@ export const Photos = () => {
   const [pr, setPr] = useState<boolean>();
 
   const getId = () => {
-    fetchAuthSession().then((response: AuthSession) => {
+    fetchAuthSession().then((response) => {
       setCognitoSub(response.identityId);
     });
   };
@@ -78,8 +78,6 @@ export const Photos = () => {
     });
 
     setFilelist(fileNames);
-
-    fileNames.forEach(addImagesToList);
 
     const addImagesToList = (filename: string) => {
       let orig = "photos/".concat(filename);
@@ -119,6 +117,8 @@ export const Photos = () => {
         });
       });
     };
+    fileNames.forEach(addImagesToList);
+
     setPr(true);
   };
 

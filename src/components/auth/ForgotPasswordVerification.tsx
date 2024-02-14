@@ -7,9 +7,9 @@ import { useNavigate } from "react-router-dom";
 
 export const ForgotPasswordVerification = () => {
   const navigate = useNavigate();
-  const [verificationcode, setVerificationcode] = useState("");
-  const [email, setEmail] = useState("");
-  const [newpassword, setNewPassword] = useState("");
+  const [verificationcode, setVerificationcode] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [newpassword, setNewPassword] = useState<string>("");
   const [errors, setErrors] = useState<{
     cognito: cognitoType;
     blankfield: boolean;
@@ -59,9 +59,6 @@ export const ForgotPasswordVerification = () => {
   };
 
   const onInputChange = (event: { target: { id: string; value: any } }) => {
-    this.setState({
-      [event.target.id]: event.target.value,
-    });
     const id = document.getElementById(event.target.id);
     if (id !== null) {
       id.classList.remove("is-danger");
@@ -88,7 +85,10 @@ export const ForgotPasswordVerification = () => {
                 aria-describedby="verificationCodeHelp"
                 placeholder="Enter verification code"
                 value={verificationcode}
-                onChange={onInputChange}
+                onChange={() => {
+                  setVerificationcode(verificationcode);
+                  onInputChange;
+                }}
               />
             </p>
           </div>
@@ -101,7 +101,10 @@ export const ForgotPasswordVerification = () => {
                 aria-describedby="emailHelp"
                 placeholder="Enter email"
                 value={email}
-                onChange={onInputChange}
+                onChange={() => {
+                  setEmail(email);
+                  onInputChange;
+                }}
               />
               <span className="icon is-small is-left">
                 <i className="fas fa-envelope"></i>
@@ -116,7 +119,10 @@ export const ForgotPasswordVerification = () => {
                 id="newpassword"
                 placeholder="New password"
                 value={newpassword}
-                onChange={onInputChange}
+                onChange={() => {
+                  setNewPassword(newpassword);
+                  onInputChange;
+                }}
               />
               <span className="icon is-small is-left">
                 <i className="fas fa-lock"></i>

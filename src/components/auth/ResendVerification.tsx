@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 export const ResendVerification = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState<string>("");
   const [errors, setErrors] = useState<{
     cognito: cognitoType;
     blankfield: boolean;

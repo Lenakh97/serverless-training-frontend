@@ -16,8 +16,8 @@ export const LogIn = ({
   handleLogIn: (username: string, password: string) => Promise<void>;
 }) => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [errors, setErrors] = useState<{
     cognito: cognitoType;
     blankfield: boolean;
@@ -57,10 +57,7 @@ export const LogIn = ({
     }
   };
 
-  const onInputChange = (event) => {
-    this.setState({
-      [event.target.id]: event.target.value,
-    });
+  const onInputChange = (event: { target: { id: string } }) => {
     const id = document.getElementById(event.target.id);
     if (id !== null) {
       id.classList.remove("is-danger");
@@ -83,7 +80,10 @@ export const LogIn = ({
                 aria-describedby="usernameHelp"
                 placeholder="Enter username or email"
                 value={username}
-                onChange={onInputChange}
+                onChange={() => {
+                  setUsername(username);
+                  onInputChange;
+                }}
               />
             </p>
           </div>
@@ -95,7 +95,10 @@ export const LogIn = ({
                 id="password"
                 placeholder="Password"
                 value={password}
-                onChange={onInputChange}
+                onChange={() => {
+                  setPassword(password);
+                  onInputChange;
+                }}
               />
               <span className="icon is-small is-left">
                 <i className="fas fa-lock"></i>
@@ -117,5 +120,3 @@ export const LogIn = ({
     </section>
   );
 };
-
-export default withNavigateHook(LogIn);

@@ -56,10 +56,6 @@ export const VerifyAccount = () => {
         ...errors,
         cognito: err,
       });
-      setErrors({
-        ...errors,
-        cognito: err,
-      });
     }
   };
 

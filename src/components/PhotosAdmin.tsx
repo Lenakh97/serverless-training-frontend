@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { list, uploadData } from "aws-amplify/storage";
+import { list, uploadData, type ListPaginateOutput } from "aws-amplify/storage";
 import { del } from "aws-amplify/api";
 import { FileTable } from "./table/FileTable";
 import { fetchAuthSession } from "aws-amplify/auth";
@@ -52,7 +52,7 @@ export const PhotosAdmin = () => {
     let that = this;
 
     await Promise.all(
-      keys.map(async function (image: Image) {
+      keys.map(() => async (image: Image) => {
         const photoKey = image.key;
         const fullPhotoKey = `private/${cognitoID}/photos/${photoKey}`;
         const token = (await fetchAuthSession()).tokens?.idToken?.toString();
@@ -112,7 +112,7 @@ export const PhotosAdmin = () => {
 
   const listImages = () => {
     list({ prefix: "photos/", options: { accessLevel: "private" } }).then(
-      (result) => {
+      (result: ListPaginateOutput) => {
         const fileArray = Object.values(result);
         const tableData = fileArray[0].map(getImageDetails);
         setTableData(tableData);

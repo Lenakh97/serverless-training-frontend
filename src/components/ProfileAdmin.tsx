@@ -9,9 +9,9 @@ export const ProfileAdmin = () => {
 
   useEffect(() => {
     fetchAuthSession().then((response): void => {
-      setEmail(response.tokens.idToken.payload.email);
+      setEmail(String(response.tokens?.idToken?.payload.email));
       setCognitoID(response.identityId ?? "");
-      setUsername(response.tokens.accessToken.payload.username);
+      setUsername(String(response.tokens?.accessToken.payload.username));
       setLoading(false);
     });
   });
