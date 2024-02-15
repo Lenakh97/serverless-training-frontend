@@ -61,8 +61,8 @@ export const Photos = () => {
   const [pr, setPr] = useState<boolean>();
 
   const getId = () => {
-    fetchAuthSession().then((response) => {
-      setCognitoSub(response.identityId);
+    fetchAuthSession().then((response): void => {
+      setCognitoSub(response.identityId ?? "");
     });
   };
 
