@@ -22,7 +22,9 @@ const getPresignedURLS = async (orig: string, thumb: string) => {
   return Promise.resolve(results);
 };
 
-const getPhotoLabels = async (key: string) => {
+const getPhotoLabels = async (
+  key: string
+): Promise<(DocumentType | undefined)[]> => {
   const apiName = "imageAPI";
   const path = "images";
   const token = (await fetchAuthSession()).tokens?.idToken?.toString();
@@ -99,7 +101,7 @@ export const Photos = () => {
 
         getPhotoLabels(fullName).then((result) => {
           let allLabels = result[0][0];
-          if (allLabels) {
+          if (allLabels !== null && allLabels !== undefined) {
             let labelsDetected = Object.values(allLabels);
             const filterLabels = (cut: string, list: any[]) =>
               list

@@ -51,7 +51,7 @@ export const ChangePassword = () => {
         newPassword: newpassword,
       });
       navigate("/changepasswordconfirmation");
-    } catch (error) {
+    } catch (error: any) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
       setErrors({

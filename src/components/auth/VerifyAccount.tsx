@@ -49,7 +49,7 @@ export const VerifyAccount = () => {
         confirmationCode: verificationcode,
       });
       navigate("/welcome");
-    } catch (error) {
+    } catch (error: any) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
       setErrors({

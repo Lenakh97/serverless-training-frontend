@@ -61,7 +61,7 @@ export const Register = () => {
       });
       console.log(signUpResponse);
       navigate("/verify", { state: { username } });
-    } catch (error) {
+    } catch (error: any) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
       setErrors({

@@ -37,7 +37,7 @@ export const ResendVerification = () => {
     try {
       await resendSignUpCode({ username: username });
       navigate("/verify", { state: { username: username } });
-    } catch (error) {
+    } catch (error: any) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
       setErrors({

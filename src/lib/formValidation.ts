@@ -20,7 +20,7 @@ export const validateForm = (
     firstname?: string;
     lastname?: string;
   }
-): { blankfield: boolean } | { passwordmatch: boolean } => {
+): { blankfield: boolean } | { passwordmatch: boolean } | { error: Error } => {
   // clear all error messages
   const inputs = document.getElementsByClassName("is-danger");
 
@@ -124,7 +124,7 @@ export const validateForm = (
     }
     return { passwordmatch: true };
   }
-  return;
+  return { error: new Error("Error while validating.") };
 };
 
 export default validateForm;

@@ -47,7 +47,7 @@ export const LogIn = ({
     try {
       await handleLogIn(username, password);
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
       setErrors({
