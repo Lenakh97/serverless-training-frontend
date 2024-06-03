@@ -3,7 +3,8 @@ import { list, uploadData, type ListPaginateOutput } from "aws-amplify/storage";
 import { del } from "aws-amplify/api";
 import { FileTable } from "./table/FileTable";
 import { fetchAuthSession } from "aws-amplify/auth";
-
+import { type StorageUploadDataPayload } from "@aws-amplify/storage/dist/esm/types";
+import { type ListOutputItem } from "@aws-amplify/storage/dist/esm/providers/s3/types";
 type Image = {
   key: string;
   lastModified: { toString: () => string };
@@ -19,8 +20,8 @@ type TableData = {
 const bytesToSize = (bytes: number) => {
   let sizes = ["Bytes", "KB", "MB", "GB", "TB"];
   if (bytes == 0) return "0 Byte";
-  let i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-  return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
+  let i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return Math.round(bytes / Math.pow(1024, i)) + " " + sizes[i];
 };
 
 const getImageDetails = (image: Image) => {
@@ -38,12 +39,12 @@ const getImageDetails = (image: Image) => {
 };
 export const PhotosAdmin = () => {
   const [imageName, setImageName] = useState<string>("");
-  const [imageFile, setImageFile] = useState<string>("");
+  const [imageFile, setImageFile] = useState<StorageUploadDataPayload>("");
   const [response, setResponse] = useState<string>("");
   const [tableData, setTableData] = useState<TableData>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
   const [uploading, setUploading] = useState<boolean>(false);
-  const [identity, setIdentity] = useState<string>([]);
+  const [identity, setIdentity] = useState<string>("");
 
   const deleteImages = async (keys: Array<string>) => {
     const cognitoID = identity;
@@ -97,8 +98,8 @@ export const PhotosAdmin = () => {
   const uploadImage = async () => {
     try {
       const result = await uploadData({
-        key: `photos/${this.upload.files[0].name}`,
-        data: this.upload.files[0],
+        key: `photos/${imageName}`,
+        data: imageFile,
         options: {
           contentType: this.upload.files[0].type,
           accessLevel: "private",
@@ -113,7 +114,9 @@ export const PhotosAdmin = () => {
   const listImages = () => {
     list({ prefix: "photos/", options: { accessLevel: "private" } }).then(
       (result: ListPaginateOutput) => {
-        const fileArray = Object.values(result);
+        const fileArray = Object.values(
+          result
+        ) as unknown as ListOutputItem[][];
         const tableData = fileArray[0].map(getImageDetails);
         setTableData(tableData);
         setLoaded(true);
@@ -124,6 +127,9 @@ export const PhotosAdmin = () => {
   useEffect(() => {
     listImages();
     fetchAuthSession().then((response) => {
+      if (response.identityId === undefined) {
+        return;
+      }
       setIdentity(response.identityId);
     });
   });
@@ -139,9 +145,15 @@ export const PhotosAdmin = () => {
               accept="image/png, image/jpeg"
               style={{ display: "none" }}
               ref={(ref) => (this.upload = ref)}
-              onChange={() => {
-                setImageFile(this.upload.files[0]);
-                setImageName(this.upload.files[0].name);
+              onChange={(event) => {
+                if (
+                  event.target.files === null ||
+                  event.target.files === undefined
+                ) {
+                  return;
+                }
+                setImageFile(event.target.files[0]);
+                setImageName(event.target.files[0].name);
               }}
             />
             <input

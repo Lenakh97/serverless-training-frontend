@@ -3,6 +3,7 @@ import { list, getUrl } from "aws-amplify/storage";
 import { get } from "aws-amplify/api";
 import ImageGallery, { type ReactImageGalleryItem } from "react-image-gallery";
 import { fetchAuthSession } from "aws-amplify/auth";
+import { type DocumentType } from "@aws-amplify/core/dist/esm/singleton/API/types";
 
 let images: ReactImageGalleryItem[] = [];
 
@@ -100,7 +101,11 @@ export const Photos = () => {
         images.push(currentImg);
 
         getPhotoLabels(fullName).then((result) => {
-          let allLabels = result[0][0];
+          const res = result[0] as DocumentType[];
+          if (res === null || res === undefined) {
+            return;
+          }
+          let allLabels = res[0];
           if (allLabels !== null && allLabels !== undefined) {
             let labelsDetected = Object.values(allLabels);
             const filterLabels = (cut: string, list: any[]) =>
@@ -110,7 +115,7 @@ export const Photos = () => {
 
             let filtered = filterLabels("private", labelsDetected).join(" * ");
             for (let i in images) {
-              if (images[i].original.pathname.includes(filename)) {
+              if (images[i].original.includes(filename)) {
                 images[i].description = filtered;
                 break; //Stop this loop, we found it!
               }
